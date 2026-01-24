@@ -40,13 +40,14 @@ export function InviteAcceptForm({
   return (
     <Card>
       <CardContent className="pt-6">
-        <p className="text-center text-gray-600 dark:text-gray-400">
+        <p className="text-center text-muted-foreground">
           Klicken Sie auf die Schaltfläche unten, um der Organisation{" "}
-          <strong>{organizationName}</strong> beizutreten.
+          <strong className="text-foreground">{organizationName}</strong>{" "}
+          beizutreten.
         </p>
 
         {error && (
-          <div className="mt-4 p-3 rounded-md text-sm bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+          <div className="mt-4 p-3 rounded-md text-sm border-l-4 bg-destructive/10 text-destructive border-l-destructive">
             {error}
           </div>
         )}

@@ -20,7 +20,7 @@ export async function signUp(data: RegisterInput) {
     return { error: error.message };
   }
 
-  return { success: true, message: "Check your email to confirm your account" };
+  return { success: true, message: "Überprüfen Sie Ihre E-Mail, um Ihr Konto zu bestätigen" };
 }
 
 export async function signIn(data: LoginInput) {
@@ -53,7 +53,7 @@ export async function signInWithMagicLink(data: MagicLinkInput) {
     return { error: error.message };
   }
 
-  return { success: true, message: "Check your email for the magic link" };
+  return { success: true, message: "Überprüfen Sie Ihre E-Mail für den Magic Link" };
 }
 
 export async function signOut() {
@@ -74,7 +74,7 @@ export async function resetPassword(data: ResetPasswordInput) {
     return { error: error.message };
   }
 
-  return { success: true, message: "Check your email for the password reset link" };
+  return { success: true, message: "Überprüfen Sie Ihre E-Mail für den Link zum Zurücksetzen des Passworts" };
 }
 
 export async function updatePassword(data: UpdatePasswordInput) {

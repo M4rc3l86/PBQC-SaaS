@@ -58,7 +58,7 @@ export function ForgotPasswordForm() {
               disabled={isLoading}
             />
             {form.formState.errors.email && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm text-destructive">
                 {form.formState.errors.email.message}
               </p>
             )}
@@ -66,10 +66,10 @@ export function ForgotPasswordForm() {
 
           {message && (
             <div
-              className={`p-3 rounded-md text-sm ${
-                message.type === "error" ?
-                  "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+              className={`p-3 rounded-md text-sm border-l-4 ${
+                message.type === "error"
+                  ? "bg-destructive/10 text-destructive border-l-destructive"
+                  : "bg-primary/10 text-primary border-l-primary"
               }`}
             >
               {message.text}

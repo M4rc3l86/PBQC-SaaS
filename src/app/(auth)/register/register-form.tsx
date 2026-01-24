@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Check, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,7 +77,7 @@ export function RegisterForm() {
               disabled={isLoading}
             />
             {form.formState.errors.email && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm text-destructive">
                 {form.formState.errors.email.message}
               </p>
             )}
@@ -92,20 +92,24 @@ export function RegisterForm() {
               disabled={isLoading}
             />
             {form.formState.errors.password && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm text-destructive">
                 {form.formState.errors.password.message}
               </p>
             )}
 
             {password.length > 0 && (
-              <div className="mt-2 space-y-1">
+              <div className="mt-3 p-3 rounded-md bg-muted/50 space-y-2">
                 {passwordRequirements.map((req, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
-                    {req.met ?
-                      <Check className="h-4 w-4 text-green-500" />
-                    : <X className="h-4 w-4 text-gray-300" />}
+                    <div
+                      className={`h-2 w-2 rounded-full transition-colors ${
+                        req.met ? "bg-primary" : "bg-muted-foreground/30"
+                      }`}
+                    />
                     <span
-                      className={req.met ? "text-green-600" : "text-gray-500"}
+                      className={`transition-colors ${
+                        req.met ? "text-foreground" : "text-muted-foreground"
+                      }`}
                     >
                       {req.text}
                     </span>
@@ -124,13 +128,13 @@ export function RegisterForm() {
               disabled={isLoading}
             />
             {form.formState.errors.confirmPassword && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm text-destructive">
                 {form.formState.errors.confirmPassword.message}
               </p>
             )}
           </div>
 
-          <div className="flex items-start space-x-2">
+          <div className="flex items-start space-x-3">
             <Checkbox
               id="acceptTerms"
               checked={acceptTerms}
@@ -142,19 +146,25 @@ export function RegisterForm() {
             <div className="grid gap-1.5 leading-none">
               <label
                 htmlFor="acceptTerms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm leading-snug peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Ich akzeptiere die{" "}
-                <a href="/terms" className="text-primary hover:underline">
+                <a
+                  href="/terms"
+                  className="text-primary hover:text-primary/80 link-underline transition-colors"
+                >
                   Nutzungsbedingungen
                 </a>{" "}
                 und{" "}
-                <a href="/privacy" className="text-primary hover:underline">
+                <a
+                  href="/privacy"
+                  className="text-primary hover:text-primary/80 link-underline transition-colors"
+                >
                   Datenschutzerklärung
                 </a>
               </label>
               {form.formState.errors.acceptTerms && (
-                <p className="text-sm text-red-500">
+                <p className="text-sm text-destructive">
                   {form.formState.errors.acceptTerms.message}
                 </p>
               )}
@@ -163,10 +173,10 @@ export function RegisterForm() {
 
           {message && (
             <div
-              className={`p-3 rounded-md text-sm ${
-                message.type === "error" ?
-                  "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+              className={`p-3 rounded-md text-sm border-l-4 ${
+                message.type === "error"
+                  ? "bg-destructive/10 text-destructive border-l-destructive"
+                  : "bg-primary/10 text-primary border-l-primary"
               }`}
             >
               {message.text}

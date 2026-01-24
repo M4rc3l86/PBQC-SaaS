@@ -90,7 +90,7 @@ export function LoginForm() {
                   disabled={isLoading}
                 />
                 {passwordForm.formState.errors.email && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {passwordForm.formState.errors.email.message}
                   </p>
                 )}
@@ -101,7 +101,7 @@ export function LoginForm() {
                   <Label htmlFor="password">Passwort</Label>
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-primary hover:underline"
+                    className="text-xs text-primary hover:text-primary/80 link-underline transition-colors"
                   >
                     Passwort vergessen?
                   </Link>
@@ -113,7 +113,7 @@ export function LoginForm() {
                   disabled={isLoading}
                 />
                 {passwordForm.formState.errors.password && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {passwordForm.formState.errors.password.message}
                   </p>
                 )}
@@ -121,10 +121,10 @@ export function LoginForm() {
 
               {message && (
                 <div
-                  className={`p-3 rounded-md text-sm ${
-                    message.type === "error" ?
-                      "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                    : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                  className={`p-3 rounded-md text-sm border-l-4 ${
+                    message.type === "error"
+                      ? "bg-destructive/10 text-destructive border-l-destructive"
+                      : "bg-primary/10 text-primary border-l-primary"
                   }`}
                 >
                   {message.text}
@@ -154,23 +154,23 @@ export function LoginForm() {
                   disabled={isLoading}
                 />
                 {magicLinkForm.formState.errors.email && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-destructive">
                     {magicLinkForm.formState.errors.email.message}
                   </p>
                 )}
               </div>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Wir senden Ihnen einen Link per E-Mail, mit dem Sie sich ohne
                 Passwort anmelden können.
               </p>
 
               {message && (
                 <div
-                  className={`p-3 rounded-md text-sm ${
-                    message.type === "error" ?
-                      "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                    : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                  className={`p-3 rounded-md text-sm border-l-4 ${
+                    message.type === "error"
+                      ? "bg-destructive/10 text-destructive border-l-destructive"
+                      : "bg-primary/10 text-primary border-l-primary"
                   }`}
                 >
                   {message.text}

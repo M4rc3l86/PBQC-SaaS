@@ -1,11 +1,11 @@
 import { z } from "zod"
 
 export const createJobSchema = z.object({
-  site_id: z.string().uuid("Please select a site"),
-  template_id: z.string().uuid("Please select a template"),
-  assigned_to: z.string().uuid("Please select a worker").optional().nullable(),
+  site_id: z.string().uuid("Bitte wählen Sie einen Standort aus"),
+  template_id: z.string().uuid("Bitte wählen Sie eine Vorlage aus"),
+  assigned_to: z.string().uuid("Bitte wählen Sie einen Mitarbeiter aus").optional().nullable(),
   scheduled_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Please enter a valid date",
+    message: "Bitte geben Sie ein gültiges Datum ein",
   }),
 })
 
@@ -16,7 +16,7 @@ export const updateJobSchema = z.object({
   scheduled_date: z
     .string()
     .refine((val) => !isNaN(Date.parse(val)), {
-      message: "Please enter a valid date",
+      message: "Bitte geben Sie ein gültiges Datum ein",
     })
     .optional(),
   status: z
@@ -46,27 +46,27 @@ export const updateJobStatusSchema = z.object({
 export const rejectJobSchema = z.object({
   review_comment: z
     .string()
-    .min(10, "Please provide a reason for rejection (at least 10 characters)")
-    .max(1000, "Comment must be less than 1000 characters"),
+    .min(10, "Bitte geben Sie einen Ablehnungsgrund an (mindestens 10 Zeichen)")
+    .max(1000, "Der Kommentar darf maximal 1000 Zeichen lang sein"),
 })
 
 export const updateJobItemResultSchema = z.object({
   status: z.enum(["pass", "fail", "na", "pending"]),
-  note: z.string().max(500, "Note must be less than 500 characters").optional().nullable(),
+  note: z.string().max(500, "Die Notiz darf maximal 500 Zeichen lang sein").optional().nullable(),
   number_value: z.number().optional().nullable(),
   text_value: z.string().max(500).optional().nullable(),
 })
 
 export const uploadJobPhotoSchema = z.object({
   item_id: z.string().uuid().optional().nullable(),
-  caption: z.string().max(200, "Caption must be less than 200 characters").optional(),
+  caption: z.string().max(200, "Die Bildunterschrift darf maximal 200 Zeichen lang sein").optional(),
 })
 
 export const createJobCommentSchema = z.object({
   content: z
     .string()
-    .min(1, "Comment cannot be empty")
-    .max(1000, "Comment must be less than 1000 characters"),
+    .min(1, "Der Kommentar darf nicht leer sein")
+    .max(1000, "Der Kommentar darf maximal 1000 Zeichen lang sein"),
 })
 
 export type CreateJobInput = z.infer<typeof createJobSchema>

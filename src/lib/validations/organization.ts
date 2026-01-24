@@ -3,27 +3,27 @@ import { z } from "zod"
 export const createOrganizationSchema = z.object({
   name: z
     .string()
-    .min(2, "Organization name must be at least 2 characters")
-    .max(100, "Organization name must be less than 100 characters"),
+    .min(2, "Der Organisationsname muss mindestens 2 Zeichen lang sein")
+    .max(100, "Der Organisationsname darf maximal 100 Zeichen lang sein"),
 })
 
 export const updateOrganizationSchema = z.object({
   name: z
     .string()
-    .min(2, "Organization name must be at least 2 characters")
-    .max(100, "Organization name must be less than 100 characters"),
+    .min(2, "Der Organisationsname muss mindestens 2 Zeichen lang sein")
+    .max(100, "Der Organisationsname darf maximal 100 Zeichen lang sein"),
 })
 
 export const inviteMemberSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
   role: z.enum(["manager", "worker"], {
-    message: "Please select a role",
+    message: "Bitte wählen Sie eine Rolle aus",
   }),
 })
 
 export const updateMemberRoleSchema = z.object({
   role: z.enum(["owner", "manager", "worker"], {
-    message: "Please select a role",
+    message: "Bitte wählen Sie eine Rolle aus",
   }),
 })
 

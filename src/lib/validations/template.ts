@@ -3,11 +3,11 @@ import { z } from "zod"
 export const createTemplateSchema = z.object({
   name: z
     .string()
-    .min(2, "Template name must be at least 2 characters")
-    .max(100, "Template name must be less than 100 characters"),
+    .min(2, "Der Vorlagenname muss mindestens 2 Zeichen lang sein")
+    .max(100, "Der Vorlagenname darf maximal 100 Zeichen lang sein"),
   description: z
     .string()
-    .max(500, "Description must be less than 500 characters")
+    .max(500, "Die Beschreibung darf maximal 500 Zeichen lang sein")
     .optional()
     .or(z.literal("")),
 })
@@ -15,11 +15,11 @@ export const createTemplateSchema = z.object({
 export const updateTemplateSchema = z.object({
   name: z
     .string()
-    .min(2, "Template name must be at least 2 characters")
-    .max(100, "Template name must be less than 100 characters"),
+    .min(2, "Der Vorlagenname muss mindestens 2 Zeichen lang sein")
+    .max(100, "Der Vorlagenname darf maximal 100 Zeichen lang sein"),
   description: z
     .string()
-    .max(500, "Description must be less than 500 characters")
+    .max(500, "Die Beschreibung darf maximal 500 Zeichen lang sein")
     .optional()
     .or(z.literal("")),
   is_active: z.boolean().optional(),
@@ -28,15 +28,15 @@ export const updateTemplateSchema = z.object({
 export const createChecklistItemSchema = z.object({
   title: z
     .string()
-    .min(1, "Item title is required")
-    .max(200, "Title must be less than 200 characters"),
+    .min(1, "Titel des Elements ist erforderlich")
+    .max(200, "Der Titel darf maximal 200 Zeichen lang sein"),
   description: z
     .string()
-    .max(500, "Description must be less than 500 characters")
+    .max(500, "Die Beschreibung darf maximal 500 Zeichen lang sein")
     .optional()
     .or(z.literal("")),
   item_type: z.enum(["checkbox", "text", "number", "photo_only"], {
-    message: "Please select an item type",
+    message: "Bitte wählen Sie einen Elementtyp aus",
   }),
   requires_photo: z.boolean().default(false),
   requires_note: z.boolean().default(false),
@@ -47,11 +47,11 @@ export const createChecklistItemSchema = z.object({
 export const updateChecklistItemSchema = z.object({
   title: z
     .string()
-    .min(1, "Item title is required")
-    .max(200, "Title must be less than 200 characters"),
+    .min(1, "Titel des Elements ist erforderlich")
+    .max(200, "Der Titel darf maximal 200 Zeichen lang sein"),
   description: z
     .string()
-    .max(500, "Description must be less than 500 characters")
+    .max(500, "Die Beschreibung darf maximal 500 Zeichen lang sein")
     .optional()
     .or(z.literal("")),
   item_type: z.enum(["checkbox", "text", "number", "photo_only"]),

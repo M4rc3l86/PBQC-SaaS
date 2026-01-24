@@ -13,7 +13,7 @@ interface InviteData {
 export async function sendInvitation(data: InviteData) {
   const user = await getUser();
   if (!user) {
-    return { error: "Not authenticated" };
+    return { error: "Nicht authentifiziert" };
   }
 
   const supabase = await createClient();
@@ -28,7 +28,7 @@ export async function sendInvitation(data: InviteData) {
     .single();
 
   if (!membership || (membership.role !== "owner" && membership.role !== "manager")) {
-    return { error: "You don't have permission to invite members" };
+    return { error: "Sie haben keine Berechtigung, Mitglieder einzuladen" };
   }
 
   // Check if email is already a member
@@ -41,10 +41,10 @@ export async function sendInvitation(data: InviteData) {
 
   if (existingMember) {
     if (existingMember.status === "active") {
-      return { error: "This email is already a member of the organization" };
+      return { error: "Diese E-Mail-Adresse ist bereits Mitglied der Organisation" };
     }
     if (existingMember.status === "invited") {
-      return { error: "An invitation has already been sent to this email" };
+      return { error: "An diese E-Mail-Adresse wurde bereits eine Einladung gesendet" };
     }
   }
 
@@ -70,7 +70,7 @@ export async function sendInvitation(data: InviteData) {
 
   return {
     success: true,
-    message: "Invitation sent successfully",
+    message: "Einladung erfolgreich gesendet",
     inviteToken: newMember?.invitation_token, // Return for testing purposes
   };
 }
@@ -89,7 +89,7 @@ export async function getInvitation(token: string) {
     .single();
 
   if (error || !invitation) {
-    return { error: "Invalid or expired invitation" };
+    return { error: "Ungültige oder abgelaufene Einladung" };
   }
 
   return { invitation };
@@ -98,7 +98,7 @@ export async function getInvitation(token: string) {
 export async function acceptInvitation(token: string) {
   const user = await getUser();
   if (!user) {
-    return { error: "Please log in or register first", requiresAuth: true };
+    return { error: "Bitte melden Sie sich zuerst an oder registrieren Sie sich", requiresAuth: true };
   }
 
   const supabase = await createAdminClient();
@@ -112,12 +112,12 @@ export async function acceptInvitation(token: string) {
     .single();
 
   if (fetchError || !invitation) {
-    return { error: "Invalid or expired invitation" };
+    return { error: "Ungültige oder abgelaufene Einladung" };
   }
 
   // Check if email matches
   if (invitation.email.toLowerCase() !== user.email?.toLowerCase()) {
-    return { error: "This invitation was sent to a different email address" };
+    return { error: "Diese Einladung wurde an eine andere E-Mail-Adresse gesendet" };
   }
 
   // Update the invitation to active
@@ -141,7 +141,7 @@ export async function acceptInvitation(token: string) {
 export async function resendInvitation(memberId: string, orgId: string) {
   const user = await getUser();
   if (!user) {
-    return { error: "Not authenticated" };
+    return { error: "Nicht authentifiziert" };
   }
 
   const supabase = await createClient();
@@ -156,7 +156,7 @@ export async function resendInvitation(memberId: string, orgId: string) {
     .single();
 
   if (!membership || (membership.role !== "owner" && membership.role !== "manager")) {
-    return { error: "You don't have permission to resend invitations" };
+    return { error: "Sie haben keine Berechtigung, Einladungen erneut zu senden" };
   }
 
   // Get the member
@@ -169,7 +169,7 @@ export async function resendInvitation(memberId: string, orgId: string) {
     .single();
 
   if (!member) {
-    return { error: "Invitation not found" };
+    return { error: "Einladung nicht gefunden" };
   }
 
   // Generate new token
@@ -189,5 +189,5 @@ export async function resendInvitation(memberId: string, orgId: string) {
 
   // TODO: Send invitation email
 
-  return { success: true, message: "Invitation resent" };
+  return { success: true, message: "Einladung erneut gesendet" };
 }
