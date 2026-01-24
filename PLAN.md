@@ -52,44 +52,44 @@ Set up the complete development environment, project structure, and database sch
 ### Tasks
 
 #### 0.1 Project Initialization
-- [ ] Create Next.js 14+ project with App Router
+- [x] Create Next.js 14+ project with App Router
   ```bash
   npx create-next-app@latest --typescript --tailwind --eslint --app
   ```
-- [ ] Configure TypeScript strict mode
-- [ ] Set up path aliases (`@/components`, `@/lib`, etc.)
-- [ ] Initialize Git repository with `.gitignore`
-- [ ] Create initial `README.md` with setup instructions
+- [x] Configure TypeScript strict mode
+- [x] Set up path aliases (`@/components`, `@/lib`, etc.)
+- [x] Initialize Git repository with `.gitignore`
+- [x] Create initial `README.md` with setup instructions
 
 #### 0.2 Dependencies Installation
-- [ ] Install and configure Tailwind CSS (included in create-next-app)
-- [ ] Install shadcn/ui and initialize
+- [x] Install and configure Tailwind CSS (included in create-next-app)
+- [x] Install shadcn/ui and initialize
   ```bash
   npx shadcn-ui@latest init
   ```
-- [ ] Install core shadcn components: Button, Input, Card, Dialog, Toast, Form, Table, Badge, Dropdown
-- [ ] Install Supabase client libraries
+- [x] Install core shadcn components: Button, Input, Card, Dialog, Toast, Form, Table, Badge, Dropdown
+- [x] Install Supabase client libraries
   ```bash
   npm install @supabase/supabase-js @supabase/ssr
   ```
-- [ ] Install additional utilities: `date-fns`, `zod`, `react-hook-form`, `nanoid`
-- [ ] Install pdfkit for PDF generation
-- [ ] Install Stripe SDK
+- [x] Install additional utilities: `date-fns`, `zod`, `react-hook-form`, `nanoid`
+- [x] Install pdfkit for PDF generation
+- [x] Install Stripe SDK
 
 #### 0.3 Supabase Project Setup
-- [ ] Create new Supabase project
-- [ ] Note down project URL and anon/service keys
-- [ ] Configure environment variables in `.env.local`:
+- [x] Create new Supabase project
+- [x] Note down project URL and anon/service keys
+- [x] Configure environment variables in `.env.local`:
   ```
   NEXT_PUBLIC_SUPABASE_URL=
   NEXT_PUBLIC_SUPABASE_ANON_KEY=
   SUPABASE_SERVICE_ROLE_KEY=
   ```
-- [ ] Set up Supabase client utilities (`lib/supabase/client.ts`, `lib/supabase/server.ts`)
-- [ ] Configure middleware for auth session handling
+- [x] Set up Supabase client utilities (`lib/supabase/client.ts`, `lib/supabase/server.ts`)
+- [x] Configure middleware for auth session handling
 
 #### 0.4 Database Schema Creation
-- [ ] Create migration for ENUM types:
+- [x] Create migration for ENUM types:
   - `org_role`: owner, manager, worker
   - `member_status`: invited, active, inactive
   - `item_type`: checkbox, text, number, photo_only
@@ -97,45 +97,45 @@ Set up the complete development environment, project structure, and database sch
   - `item_result_status`: pass, fail, na, pending
   - `subscription_status`: trialing, active, past_due, canceled, unpaid
   - `plan_type`: starter, pro
-- [ ] Create `organizations` table
-- [ ] Create `org_members` table with unique constraint on (org_id, email)
-- [ ] Create `sites` table
-- [ ] Create `checklist_templates` table
-- [ ] Create `checklist_items` table with sort_order
-- [ ] Create `jobs` table
-- [ ] Create `job_item_results` table with unique constraint on (job_id, item_id)
-- [ ] Create `job_photos` table
-- [ ] Create `job_comments` table
-- [ ] Create `client_shares` table with token index
-- [ ] Create `billing_subscriptions` table
-- [ ] Create `updated_at` trigger function for all tables
-- [ ] Apply all migrations to Supabase
+- [x] Create `organizations` table
+- [x] Create `org_members` table with unique constraint on (org_id, email)
+- [x] Create `sites` table
+- [x] Create `checklist_templates` table
+- [x] Create `checklist_items` table with sort_order
+- [x] Create `jobs` table
+- [x] Create `job_item_results` table with unique constraint on (job_id, item_id)
+- [x] Create `job_photos` table
+- [x] Create `job_comments` table
+- [x] Create `client_shares` table with token index
+- [x] Create `billing_subscriptions` table
+- [x] Create `updated_at` trigger function for all tables
+- [x] Apply all migrations to Supabase
 
 #### 0.5 Row Level Security (RLS) Setup
-- [ ] Enable RLS on all tables
-- [ ] Create helper function `get_user_org_ids()`
-- [ ] Create helper function `get_user_role(org UUID)`
-- [ ] Create RLS policies for `organizations` (view own orgs)
-- [ ] Create RLS policies for `org_members` (view/manage based on role)
-- [ ] Create RLS policies for `sites` (org-based access)
-- [ ] Create RLS policies for `checklist_templates` (org-based access)
-- [ ] Create RLS policies for `checklist_items` (via template org)
-- [ ] Create RLS policies for `jobs` (workers see assigned only, managers see all)
-- [ ] Create RLS policies for `job_item_results` (via job access)
-- [ ] Create RLS policies for `job_photos` (upload for own jobs, view for org)
-- [ ] Create RLS policies for `job_comments` (org-based access)
-- [ ] Create RLS policies for `client_shares` (org-based access)
-- [ ] Create RLS policies for `billing_subscriptions` (owner only)
+- [x] Enable RLS on all tables
+- [x] Create helper function `get_user_org_ids()`
+- [x] Create helper function `get_user_role(org UUID)`
+- [x] Create RLS policies for `organizations` (view own orgs)
+- [x] Create RLS policies for `org_members` (view/manage based on role)
+- [x] Create RLS policies for `sites` (org-based access)
+- [x] Create RLS policies for `checklist_templates` (org-based access)
+- [x] Create RLS policies for `checklist_items` (via template org)
+- [x] Create RLS policies for `jobs` (workers see assigned only, managers see all)
+- [x] Create RLS policies for `job_item_results` (via job access)
+- [x] Create RLS policies for `job_photos` (upload for own jobs, view for org)
+- [x] Create RLS policies for `job_comments` (org-based access)
+- [x] Create RLS policies for `client_shares` (org-based access)
+- [x] Create RLS policies for `billing_subscriptions` (owner only)
 
 #### 0.6 Supabase Storage Setup
-- [ ] Create `job-photos` bucket
-- [ ] Configure bucket as private (not public)
-- [ ] Create storage policies for upload (authenticated + own org/job)
-- [ ] Create storage policies for download (authenticated + org access)
-- [ ] Test upload/download with Supabase client
+- [x] Create `job-photos` bucket
+- [x] Configure bucket as private (not public)
+- [x] Create storage policies for upload (authenticated + own org/job)
+- [x] Create storage policies for download (authenticated + org access)
+- [x] Test upload/download with Supabase client
 
 #### 0.7 Project Structure Setup
-- [ ] Create folder structure as per spec:
+- [x] Create folder structure as per spec:
   ```
   app/
     (auth)/
@@ -156,16 +156,18 @@ Set up the complete development environment, project structure, and database sch
   hooks/
   types/
   ```
-- [ ] Create TypeScript types from database schema (`types/database.ts`)
-- [ ] Create Zod schemas for form validation (`lib/validations/`)
+- [x] Create TypeScript types from database schema (`types/database.ts`)
+- [x] Create Zod schemas for form validation (`lib/validations/`)
 
 ### Definition of Done
-- [ ] `npm run dev` starts without errors
-- [ ] Supabase connection verified
-- [ ] All database tables created and RLS enabled
-- [ ] Storage bucket accessible
-- [ ] TypeScript types match database schema
-- [ ] shadcn/ui components render correctly
+- [x] `npm run dev` starts without errors
+- [x] Supabase connection verified
+- [x] All database tables created and RLS enabled
+- [x] Storage bucket accessible
+- [x] TypeScript types match database schema
+- [x] shadcn/ui components render correctly
+
+**Phase 0 Status: COMPLETED**
 
 ---
 
@@ -177,103 +179,105 @@ Implement complete authentication flow including registration, login, magic link
 ### Tasks
 
 #### 1.1 Supabase Auth Configuration
-- [ ] Enable Email/Password auth in Supabase dashboard
-- [ ] Enable Magic Link auth in Supabase dashboard
+- [x] Enable Email/Password auth in Supabase dashboard
+- [x] Enable Magic Link auth in Supabase dashboard
 - [ ] Configure email templates for:
   - Confirmation email
   - Magic link email
   - Password reset email
-- [ ] Set up redirect URLs for auth flows
+- [x] Set up redirect URLs for auth flows
 - [ ] Configure auth settings (token expiry, etc.)
 
 #### 1.2 Auth Utility Functions
-- [ ] Create `lib/supabase/client.ts` for browser client
-- [ ] Create `lib/supabase/server.ts` for server components
-- [ ] Create `lib/supabase/middleware.ts` for session handling
-- [ ] Create auth helper functions:
+- [x] Create `lib/supabase/client.ts` for browser client
+- [x] Create `lib/supabase/server.ts` for server components
+- [x] Create `lib/supabase/middleware.ts` for session handling
+- [x] Create auth helper functions:
   - `signUp(email, password)`
   - `signIn(email, password)`
   - `signInWithMagicLink(email)`
   - `signOut()`
   - `getSession()`
   - `getUser()`
-- [ ] Create middleware to protect routes
+- [x] Create middleware to protect routes
 
 #### 1.3 Registration Flow (Owner)
-- [ ] Create `app/(auth)/register/page.tsx`
-- [ ] Build registration form component with:
+- [x] Create `app/(auth)/register/page.tsx`
+- [x] Build registration form component with:
   - Email input with validation
   - Password input with strength indicator
   - Confirm password field
   - Terms acceptance checkbox
 - [ ] Add "Register with Magic Link" option (email only)
-- [ ] Implement form submission with error handling
-- [ ] Create loading states during registration
-- [ ] Redirect to email verification pending page
+- [x] Implement form submission with error handling
+- [x] Create loading states during registration
+- [x] Redirect to email verification pending page
 - [ ] Create email verification success page
 
 #### 1.4 Login Flow
-- [ ] Create `app/(auth)/login/page.tsx`
-- [ ] Build login form component with:
+- [x] Create `app/(auth)/login/page.tsx`
+- [x] Build login form component with:
   - Email input
   - Password input
   - "Remember me" checkbox
   - "Forgot password" link
-- [ ] Add "Login with Magic Link" tab/toggle
-- [ ] Implement password login submission
-- [ ] Implement magic link request flow
-- [ ] Create magic link sent confirmation page
-- [ ] Handle magic link callback route
-- [ ] Implement "Forgot Password" flow
-- [ ] Add error handling for invalid credentials
-- [ ] Redirect to dashboard or onboarding after login
+- [x] Add "Login with Magic Link" tab/toggle
+- [x] Implement password login submission
+- [x] Implement magic link request flow
+- [x] Create magic link sent confirmation page
+- [x] Handle magic link callback route
+- [x] Implement "Forgot Password" flow
+- [x] Add error handling for invalid credentials
+- [x] Redirect to dashboard or onboarding after login
 
 #### 1.5 Session Management
-- [ ] Implement middleware for protected routes
+- [x] Implement middleware for protected routes
 - [ ] Create auth context/provider for client components
-- [ ] Handle session refresh automatically
-- [ ] Implement logout functionality
+- [x] Handle session refresh automatically
+- [x] Implement logout functionality
 - [ ] Clear local state on logout
-- [ ] Redirect to login on session expiry
+- [x] Redirect to login on session expiry
 
 #### 1.6 User Profile & Onboarding Detection
 - [ ] Create hook to check if user has completed onboarding
-- [ ] Query `org_members` to check if user belongs to any org
+- [x] Query `org_members` to check if user belongs to any org
 - [ ] If no org: redirect to onboarding flow
 - [ ] If org exists: redirect to dashboard
 - [ ] Store user preferences in local storage
 
 #### 1.7 Invitation System (Basic)
-- [ ] Create `app/(auth)/invite/[token]/page.tsx`
-- [ ] Create invitation token generation function
-- [ ] Create API route `POST /api/auth/invite` for sending invitations
-- [ ] Store invitation in `org_members` with status='invited'
-- [ ] Generate unique invitation URL
+- [x] Create `app/(auth)/invite/[token]/page.tsx`
+- [x] Create invitation token generation function
+- [x] Create API route `POST /api/auth/invite` for sending invitations
+- [x] Store invitation in `org_members` with status='invited'
+- [x] Generate unique invitation URL
 - [ ] Send invitation email with link
-- [ ] Handle invitation acceptance:
+- [x] Handle invitation acceptance:
   - If user exists: add to org, set status='active'
   - If new user: show registration form, then add to org
-- [ ] Validate invitation token (check expiry, already used)
-- [ ] Update `org_members` on successful acceptance
+- [x] Validate invitation token (check expiry, already used)
+- [x] Update `org_members` on successful acceptance
 
 #### 1.8 Role-Based Route Protection
-- [ ] Create role checking utility function
+- [x] Create role checking utility function
 - [ ] Create higher-order component/hook for role guards
-- [ ] Protect dashboard routes (require auth)
+- [x] Protect dashboard routes (require auth)
 - [ ] Protect admin routes (require owner/manager)
 - [ ] Protect worker routes (require worker role)
 - [ ] Show 403 page for unauthorized access
 
 ### Definition of Done
-- [ ] User can register with email/password
+- [x] User can register with email/password
 - [ ] User can register with magic link
-- [ ] User can login with email/password
-- [ ] User can login with magic link
-- [ ] User can reset password
-- [ ] Session persists across page refreshes
-- [ ] Protected routes redirect to login
-- [ ] Invitation flow works end-to-end
+- [x] User can login with email/password
+- [x] User can login with magic link
+- [x] User can reset password
+- [x] Session persists across page refreshes
+- [x] Protected routes redirect to login
+- [x] Invitation flow works end-to-end
 - [ ] Role-based access control enforced
+
+**Phase 1 Status: IN PROGRESS (Core auth complete, some items pending)**
 
 ---
 
