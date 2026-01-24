@@ -3,6 +3,8 @@
 import { nanoid } from "nanoid";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { getUser } from "./actions";
+import { sendEmail } from "@/lib/email/send";
+import { invitationEmailTemplate } from "@/lib/email/templates/invitation";
 
 interface InviteData {
   email: string;
@@ -27,7 +29,10 @@ export async function sendInvitation(data: InviteData) {
     .eq("status", "active")
     .single();
 
-  if (!membership || (membership.role !== "owner" && membership.role !== "manager")) {
+  if (
+    !membership ||
+    (membership.role !== "owner" && membership.role !== "manager")
+  ) {
     return { error: "Sie haben keine Berechtigung, Mitglieder einzuladen" };
   }
 
@@ -41,10 +46,14 @@ export async function sendInvitation(data: InviteData) {
 
   if (existingMember) {
     if (existingMember.status === "active") {
-      return { error: "Diese E-Mail-Adresse ist bereits Mitglied der Organisation" };
+      return {
+        error: "Diese E-Mail-Adresse ist bereits Mitglied der Organisation",
+      };
     }
     if (existingMember.status === "invited") {
-      return { error: "An diese E-Mail-Adresse wurde bereits eine Einladung gesendet" };
+      return {
+        error: "An diese E-Mail-Adresse wurde bereits eine Einladung gesendet",
+      };
     }
   }
 
@@ -65,8 +74,31 @@ export async function sendInvitation(data: InviteData) {
     return { error: insertError.message };
   }
 
-  // TODO: Send invitation email with link
-  // const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${newMember.invitation_token}`;
+  // Get organization name for the email
+  const { data: org } = await supabase
+    .from("organizations")
+    .select("name")
+    .eq("id", data.orgId)
+    .single();
+
+  // Send invitation email
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${newMember?.invitation_token}`;
+  const emailHtml = invitationEmailTemplate({
+    orgName: org?.name || "Unbekannte Organisation",
+    inviteLink: inviteUrl,
+    role: data.role,
+  });
+
+  const emailResult = await sendEmail({
+    to: data.email,
+    subject: `Einladung zu ${org?.name || "PBQC"}`,
+    html: emailHtml,
+  });
+
+  // Log email error but don't fail the invitation
+  if (!emailResult.success) {
+    console.error("Failed to send invitation email:", emailResult.error);
+  }
 
   return {
     success: true,
@@ -80,10 +112,12 @@ export async function getInvitation(token: string) {
 
   const { data: invitation, error } = await supabase
     .from("org_members")
-    .select(`
+    .select(
+      `
       *,
       organization:organizations(id, name)
-    `)
+    `,
+    )
     .eq("invitation_token", token)
     .eq("status", "invited")
     .single();
@@ -98,7 +132,10 @@ export async function getInvitation(token: string) {
 export async function acceptInvitation(token: string) {
   const user = await getUser();
   if (!user) {
-    return { error: "Bitte melden Sie sich zuerst an oder registrieren Sie sich", requiresAuth: true };
+    return {
+      error: "Bitte melden Sie sich zuerst an oder registrieren Sie sich",
+      requiresAuth: true,
+    };
   }
 
   const supabase = await createAdminClient();
@@ -117,7 +154,9 @@ export async function acceptInvitation(token: string) {
 
   // Check if email matches
   if (invitation.email.toLowerCase() !== user.email?.toLowerCase()) {
-    return { error: "Diese Einladung wurde an eine andere E-Mail-Adresse gesendet" };
+    return {
+      error: "Diese Einladung wurde an eine andere E-Mail-Adresse gesendet",
+    };
   }
 
   // Update the invitation to active
@@ -155,8 +194,13 @@ export async function resendInvitation(memberId: string, orgId: string) {
     .eq("status", "active")
     .single();
 
-  if (!membership || (membership.role !== "owner" && membership.role !== "manager")) {
-    return { error: "Sie haben keine Berechtigung, Einladungen erneut zu senden" };
+  if (
+    !membership ||
+    (membership.role !== "owner" && membership.role !== "manager")
+  ) {
+    return {
+      error: "Sie haben keine Berechtigung, Einladungen erneut zu senden",
+    };
   }
 
   // Get the member
@@ -187,7 +231,31 @@ export async function resendInvitation(memberId: string, orgId: string) {
     return { error: updateError.message };
   }
 
-  // TODO: Send invitation email
+  // Get organization name for the email
+  const { data: org } = await supabase
+    .from("organizations")
+    .select("name")
+    .eq("id", orgId)
+    .single();
+
+  // Send invitation email
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${newToken}`;
+  const emailHtml = invitationEmailTemplate({
+    orgName: org?.name || "Unbekannte Organisation",
+    inviteLink: inviteUrl,
+    role: member.role,
+  });
+
+  const emailResult = await sendEmail({
+    to: member.email,
+    subject: `Einladung zu ${org?.name || "PBQC"}`,
+    html: emailHtml,
+  });
+
+  // Log email error but don't fail the resend
+  if (!emailResult.success) {
+    console.error("Failed to send invitation email:", emailResult.error);
+  }
 
   return { success: true, message: "Einladung erneut gesendet" };
 }
