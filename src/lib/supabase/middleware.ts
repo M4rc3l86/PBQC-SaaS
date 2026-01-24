@@ -1,6 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import type { Database } from "@/types/database";
+import type { Database, OrgRole } from "@/types/database";
+
+// Routes that require admin role (owner or manager)
+const adminRoutes = [
+  "/dashboard/team",
+  "/dashboard/settings",
+  "/dashboard/billing",
+];
+
+// Routes that are specifically for workers
+// Note: Currently permissive - admins can also access worker routes for testing/support
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const workerRoutes = ["/worker"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -38,21 +50,26 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
   // Define public routes that don't require authentication
   const publicRoutes = [
     "/",
     "/login",
     "/register",
+    "/forgot-password",
     "/auth/callback",
+    "/verify-success",
+    "/unauthorized",
     "/r/",
     "/invite/",
   ];
   const isPublicRoute = publicRoutes.some(
     (route) =>
-      request.nextUrl.pathname === route ||
-      request.nextUrl.pathname.startsWith("/r/") ||
-      request.nextUrl.pathname.startsWith("/auth/") ||
-      request.nextUrl.pathname.startsWith("/invite/"),
+      pathname === route ||
+      pathname.startsWith("/r/") ||
+      pathname.startsWith("/auth/") ||
+      pathname.startsWith("/invite/"),
   );
 
   // Redirect unauthenticated users to login (except for public routes)
@@ -63,14 +80,47 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Redirect authenticated users away from login/register to dashboard
-  if (
-    user &&
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/register")
-  ) {
+  if (user && (pathname === "/login" || pathname === "/register")) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
+  }
+
+  // For authenticated users, check org membership and role
+  if (user && !isPublicRoute) {
+    const { data: membership } = await supabase
+      .from("org_members")
+      .select("role, org_id, status")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .single();
+
+    // Onboarding detection: redirect users without org to onboarding
+    // (unless they're already on onboarding page)
+    if (!membership && pathname !== "/onboarding") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/onboarding";
+      return NextResponse.redirect(url);
+    }
+
+    // If user has membership, check role-based access
+    if (membership) {
+      const role = membership.role as OrgRole;
+      const isAdmin = role === "owner" || role === "manager";
+
+      // Check admin routes
+      const isAdminRoute = adminRoutes.some((route) =>
+        pathname.startsWith(route),
+      );
+      if (isAdminRoute && !isAdmin) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/unauthorized";
+        return NextResponse.redirect(url);
+      }
+
+      // Check worker-only routes (workers can access, but so can admins viewing worker UI)
+      // This is permissive - admins can view worker UI for testing/support
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
