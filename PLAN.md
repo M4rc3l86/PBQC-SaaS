@@ -192,12 +192,12 @@ Implement complete authentication flow including registration, login, magic link
 
 - [x] Enable Email/Password auth in Supabase dashboard
 - [x] Enable Magic Link auth in Supabase dashboard
-- [ ] Configure email templates for:
-  - Confirmation email
-  - Magic link email
-  - Password reset email
+- [x] Configure email templates for: *(Supabase Dashboard - Manual Configuration)*
+  - Confirmation email: "Bestätigen Sie Ihre E-Mail-Adresse"
+  - Magic link email: "Ihr Anmelde-Link"
+  - Password reset email: "Passwort zurücksetzen"
 - [x] Set up redirect URLs for auth flows
-- [ ] Configure auth settings (token expiry, etc.)
+- [x] Configure auth settings (token expiry, etc.) *(Supabase Dashboard - Manual Configuration)*
 
 #### 1.2 Auth Utility Functions
 
@@ -221,11 +221,11 @@ Implement complete authentication flow including registration, login, magic link
   - Password input with strength indicator
   - Confirm password field
   - Terms acceptance checkbox
-- [ ] Add "Register with Magic Link" option (email only)
+- [x] Add "Register with Magic Link" option (email only)
 - [x] Implement form submission with error handling
 - [x] Create loading states during registration
 - [x] Redirect to email verification pending page
-- [ ] Create email verification success page
+- [x] Create email verification success page
 
 #### 1.4 Login Flow
 
@@ -247,19 +247,19 @@ Implement complete authentication flow including registration, login, magic link
 #### 1.5 Session Management
 
 - [x] Implement middleware for protected routes
-- [ ] Create auth context/provider for client components
+- [x] Create auth context/provider for client components
 - [x] Handle session refresh automatically
 - [x] Implement logout functionality
-- [ ] Clear local state on logout
+- [x] Clear local state on logout
 - [x] Redirect to login on session expiry
 
 #### 1.6 User Profile & Onboarding Detection
 
-- [ ] Create hook to check if user has completed onboarding
+- [x] Create hook to check if user has completed onboarding
 - [x] Query `org_members` to check if user belongs to any org
-- [ ] If no org: redirect to onboarding flow
-- [ ] If org exists: redirect to dashboard
-- [ ] Store user preferences in local storage
+- [x] If no org: redirect to onboarding flow
+- [x] If org exists: redirect to dashboard
+- [x] Store user preferences in local storage
 
 #### 1.7 Invitation System (Basic)
 
@@ -268,7 +268,7 @@ Implement complete authentication flow including registration, login, magic link
 - [x] Create API route `POST /api/auth/invite` for sending invitations
 - [x] Store invitation in `org_members` with status='invited'
 - [x] Generate unique invitation URL
-- [ ] Send invitation email with link
+- [x] Send invitation email with link
 - [x] Handle invitation acceptance:
   - If user exists: add to org, set status='active'
   - If new user: show registration form, then add to org
@@ -278,25 +278,25 @@ Implement complete authentication flow including registration, login, magic link
 #### 1.8 Role-Based Route Protection
 
 - [x] Create role checking utility function
-- [ ] Create higher-order component/hook for role guards
+- [x] Create higher-order component/hook for role guards
 - [x] Protect dashboard routes (require auth)
-- [ ] Protect admin routes (require owner/manager)
-- [ ] Protect worker routes (require worker role)
-- [ ] Show 403 page for unauthorized access
+- [x] Protect admin routes (require owner/manager)
+- [x] Protect worker routes (require worker role)
+- [x] Show 403 page for unauthorized access
 
 ### Definition of Done
 
 - [x] User can register with email/password
-- [ ] User can register with magic link
+- [x] User can register with magic link
 - [x] User can login with email/password
 - [x] User can login with magic link
 - [x] User can reset password
 - [x] Session persists across page refreshes
 - [x] Protected routes redirect to login
 - [x] Invitation flow works end-to-end
-- [ ] Role-based access control enforced
+- [x] Role-based access control enforced
 
-**Phase 1 Status: IN PROGRESS (Core auth complete, some items pending)**
+**Phase 1 Status: COMPLETED** ✅
 
 ---
 

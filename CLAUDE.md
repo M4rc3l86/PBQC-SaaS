@@ -26,19 +26,22 @@
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/            # Auth routes (login, register, invite)
+│   ├── (auth)/            # Auth routes (login, register, invite, etc.)
 │   ├── (dashboard)/       # Manager/Owner dashboard
 │   ├── (worker)/          # Worker mobile-first UI
 │   ├── r/[token]/         # Public report pages
 │   └── api/               # API routes
 ├── components/
 │   ├── ui/                # shadcn/ui components
+│   ├── auth/              # Auth-related components
 │   ├── forms/             # Form components
 │   ├── job/               # Job-related components
 │   ├── camera/            # Camera capture components
 │   └── pdf/               # PDF-related components
 ├── lib/
 │   ├── supabase/          # Supabase client utilities
+│   ├── auth/              # Auth utilities, context, guards
+│   ├── email/             # Email sending (Resend)
 │   ├── stripe/            # Stripe integration
 │   ├── pdf/               # PDF generation utilities
 │   └── validations/       # Zod validation schemas
@@ -117,6 +120,8 @@ STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
 STRIPE_STARTER_PRICE_ID=
 STRIPE_PRO_PRICE_ID=
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
 ```
 
 ## Development Guidelines
@@ -133,7 +138,7 @@ STRIPE_PRO_PRICE_ID=
 See `PLAN.md` for detailed phase tracking. Current progress:
 
 - Phase 0: Foundation & Setup - COMPLETED
-- Phase 1: Authentication & Authorization - IN PROGRESS
+- Phase 1: Authentication & Authorization - COMPLETED
 - Phase 2-8: Pending
 
 ## Coding Conventions
