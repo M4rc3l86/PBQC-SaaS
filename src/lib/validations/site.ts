@@ -3,11 +3,11 @@ import { z } from "zod"
 export const createSiteSchema = z.object({
   name: z
     .string()
-    .min(2, "Site name must be at least 2 characters")
-    .max(100, "Site name must be less than 100 characters"),
+    .min(2, "Der Standortname muss mindestens 2 Zeichen lang sein")
+    .max(100, "Der Standortname darf maximal 100 Zeichen lang sein"),
   address: z
     .string()
-    .max(500, "Address must be less than 500 characters")
+    .max(500, "Die Adresse darf maximal 500 Zeichen lang sein")
     .optional()
     .or(z.literal("")),
   timezone: z.string().default("Europe/Berlin"),
@@ -16,11 +16,11 @@ export const createSiteSchema = z.object({
 export const updateSiteSchema = z.object({
   name: z
     .string()
-    .min(2, "Site name must be at least 2 characters")
-    .max(100, "Site name must be less than 100 characters"),
+    .min(2, "Der Standortname muss mindestens 2 Zeichen lang sein")
+    .max(100, "Der Standortname darf maximal 100 Zeichen lang sein"),
   address: z
     .string()
-    .max(500, "Address must be less than 500 characters")
+    .max(500, "Die Adresse darf maximal 500 Zeichen lang sein")
     .optional()
     .or(z.literal("")),
   timezone: z.string(),

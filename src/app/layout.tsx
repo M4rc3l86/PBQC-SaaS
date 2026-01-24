@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/lib/auth/context";
 
 export const metadata: Metadata = {
   title: "PBQC - Photo-Based Quality Control",
@@ -16,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="de" suppressHydrationWarning>
       <body className="font-sans antialiased">
-        {children}
-        <Toaster />
+        <AuthProvider>
+          {children}
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

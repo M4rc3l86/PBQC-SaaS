@@ -1,52 +1,64 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-})
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+  password: z.string().min(1, "Passwort ist erforderlich"),
+});
 
-export const registerSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    ),
-  confirmPassword: z.string(),
-  acceptTerms: z.boolean().refine((val) => val === true, {
-    message: "You must accept the terms and conditions",
-  }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-})
+export const registerSchema = z
+  .object({
+    email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+    password: z
+      .string()
+      .min(8, "Das Passwort muss mindestens 8 Zeichen lang sein")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Das Passwort muss mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten",
+      ),
+    confirmPassword: z.string(),
+    acceptTerms: z.boolean().refine((val) => val === true, {
+      message: "Sie müssen die Nutzungsbedingungen akzeptieren",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Die Passwörter stimmen nicht überein",
+    path: ["confirmPassword"],
+  });
 
 export const magicLinkSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-})
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+});
+
+export const registerMagicLinkSchema = z.object({
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: "Sie müssen die Nutzungsbedingungen akzeptieren",
+  }),
+});
 
 export const resetPasswordSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-})
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+});
 
-export const updatePasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    ),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-})
+export const updatePasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Das Passwort muss mindestens 8 Zeichen lang sein")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Das Passwort muss mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Die Passwörter stimmen nicht überein",
+    path: ["confirmPassword"],
+  });
 
-export type LoginInput = z.infer<typeof loginSchema>
-export type RegisterInput = z.infer<typeof registerSchema>
-export type MagicLinkInput = z.infer<typeof magicLinkSchema>
-export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
-export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>
+export type LoginInput = z.infer<typeof loginSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;
+export type MagicLinkInput = z.infer<typeof magicLinkSchema>;
+export type RegisterMagicLinkInput = z.infer<typeof registerMagicLinkSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;

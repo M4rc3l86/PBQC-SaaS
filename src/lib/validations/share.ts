@@ -5,8 +5,8 @@ export const createShareSchema = z.object({
 })
 
 export const sendShareEmailSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  message: z.string().max(500, "Message must be less than 500 characters").optional(),
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+  message: z.string().max(500, "Die Nachricht darf maximal 500 Zeichen lang sein").optional(),
 })
 
 export type CreateShareInput = z.infer<typeof createShareSchema>

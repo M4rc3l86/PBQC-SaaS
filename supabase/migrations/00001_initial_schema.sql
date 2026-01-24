@@ -2,8 +2,7 @@
 -- Photo-Based Quality Control SaaS - Initial Schema
 -- =============================================
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Note: Using gen_random_uuid() (built-in to PostgreSQL 13+) instead of gen_random_uuid()
 
 -- =============================================
 -- ENUM TYPES
@@ -36,7 +35,7 @@ CREATE TYPE plan_type AS ENUM ('starter', 'pro');
 
 -- Organizations table
 CREATE TABLE organizations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -46,7 +45,7 @@ CREATE TABLE organizations (
 
 -- Organization members table
 CREATE TABLE org_members (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   email TEXT NOT NULL,
@@ -54,7 +53,7 @@ CREATE TABLE org_members (
   status member_status NOT NULL DEFAULT 'invited',
   invited_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   joined_at TIMESTAMPTZ,
-  invitation_token UUID DEFAULT uuid_generate_v4(),
+  invitation_token UUID DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(org_id, email)
@@ -67,7 +66,7 @@ CREATE INDEX idx_org_members_invitation_token ON org_members(invitation_token);
 
 -- Sites table
 CREATE TABLE sites (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   address TEXT,
@@ -82,7 +81,7 @@ CREATE INDEX idx_sites_org_id ON sites(org_id);
 
 -- Checklist templates table
 CREATE TABLE checklist_templates (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
@@ -96,7 +95,7 @@ CREATE INDEX idx_checklist_templates_org_id ON checklist_templates(org_id);
 
 -- Checklist items table
 CREATE TABLE checklist_items (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   template_id UUID NOT NULL REFERENCES checklist_templates(id) ON DELETE CASCADE,
   parent_id UUID REFERENCES checklist_items(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
@@ -116,7 +115,7 @@ CREATE INDEX idx_checklist_items_sort_order ON checklist_items(template_id, sort
 
 -- Jobs table
 CREATE TABLE jobs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   site_id UUID NOT NULL REFERENCES sites(id) ON DELETE RESTRICT,
   template_id UUID NOT NULL REFERENCES checklist_templates(id) ON DELETE RESTRICT,
@@ -144,7 +143,7 @@ CREATE INDEX idx_jobs_org_scheduled_date ON jobs(org_id, scheduled_date);
 
 -- Job item results table
 CREATE TABLE job_item_results (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
   item_id UUID NOT NULL REFERENCES checklist_items(id) ON DELETE CASCADE,
   status item_result_status NOT NULL DEFAULT 'pending',
@@ -162,7 +161,7 @@ CREATE INDEX idx_job_item_results_item_id ON job_item_results(item_id);
 
 -- Job photos table
 CREATE TABLE job_photos (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
   item_id UUID REFERENCES checklist_items(id) ON DELETE SET NULL,
   storage_path TEXT NOT NULL,
@@ -177,7 +176,7 @@ CREATE INDEX idx_job_photos_item_id ON job_photos(item_id);
 
 -- Job comments (internal notes) table
 CREATE TABLE job_comments (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
   author_id UUID NOT NULL REFERENCES org_members(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
@@ -190,7 +189,7 @@ CREATE INDEX idx_job_comments_job_id ON job_comments(job_id);
 
 -- Client shares table
 CREATE TABLE client_shares (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
   token TEXT NOT NULL UNIQUE,
   pdf_storage_path TEXT,
@@ -205,7 +204,7 @@ CREATE INDEX idx_client_shares_job_id ON client_shares(job_id);
 
 -- Billing subscriptions table
 CREATE TABLE billing_subscriptions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE UNIQUE,
   stripe_subscription_id TEXT UNIQUE,
   plan plan_type NOT NULL DEFAULT 'starter',
