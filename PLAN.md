@@ -28,17 +28,17 @@
 
 ## Phase Overview
 
-| Phase | Name | Description | Critical Path |
-|-------|------|-------------|---------------|
-| 0 | Foundation & Setup | Project scaffolding, DB schema, basic config | Yes |
-| 1 | Authentication | Supabase Auth, login/register, invitations | Yes |
-| 2 | Core Data Management | Orgs, Sites, Templates CRUD | Yes |
-| 3 | Job Management | Job creation, assignment, status machine | Yes |
-| 4 | **Worker Flow** | Mobile UI, checklist execution, photo capture | **YES (Priority)** |
-| 5 | Review & Approval | Manager review workflow, approve/reject | Yes |
-| 6 | PDF & Sharing | Report generation, public links | Yes |
-| 7 | Billing | Stripe integration, trials, limits | Yes |
-| 8 | Polish | Error handling, notifications, PWA, launch | Yes |
+| Phase | Name                 | Description                                   | Critical Path      |
+| ----- | -------------------- | --------------------------------------------- | ------------------ |
+| 0     | Foundation & Setup   | Project scaffolding, DB schema, basic config  | Yes                |
+| 1     | Authentication       | Supabase Auth, login/register, invitations    | Yes                |
+| 2     | Core Data Management | Orgs, Sites, Templates CRUD                   | Yes                |
+| 3     | Job Management       | Job creation, assignment, status machine      | Yes                |
+| 4     | **Worker Flow**      | Mobile UI, checklist execution, photo capture | **YES (Priority)** |
+| 5     | Review & Approval    | Manager review workflow, approve/reject       | Yes                |
+| 6     | PDF & Sharing        | Report generation, public links               | Yes                |
+| 7     | Billing              | Stripe integration, trials, limits            | Yes                |
+| 8     | Polish               | Error handling, notifications, PWA, launch    | Yes                |
 
 **Milestone Marker:** After Phase 4, the core value proposition is demonstrable.
 
@@ -47,11 +47,13 @@
 ## Phase 0: Foundation & Setup
 
 ### Objective
+
 Set up the complete development environment, project structure, and database schema.
 
 ### Tasks
 
 #### 0.1 Project Initialization
+
 - [x] Create Next.js 14+ project with App Router
   ```bash
   npx create-next-app@latest --typescript --tailwind --eslint --app
@@ -62,6 +64,7 @@ Set up the complete development environment, project structure, and database sch
 - [x] Create initial `README.md` with setup instructions
 
 #### 0.2 Dependencies Installation
+
 - [x] Install and configure Tailwind CSS (included in create-next-app)
 - [x] Install shadcn/ui and initialize
   ```bash
@@ -77,18 +80,20 @@ Set up the complete development environment, project structure, and database sch
 - [x] Install Stripe SDK
 
 #### 0.3 Supabase Project Setup
+
 - [x] Create new Supabase project
 - [x] Note down project URL and anon/service keys
 - [x] Configure environment variables in `.env.local`:
   ```
   NEXT_PUBLIC_SUPABASE_URL=
-  NEXT_PUBLIC_SUPABASE_ANON_KEY=
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=
   SUPABASE_SERVICE_ROLE_KEY=
   ```
 - [x] Set up Supabase client utilities (`lib/supabase/client.ts`, `lib/supabase/server.ts`)
 - [x] Configure middleware for auth session handling
 
 #### 0.4 Database Schema Creation
+
 - [x] Create migration for ENUM types:
   - `org_role`: owner, manager, worker
   - `member_status`: invited, active, inactive
@@ -112,6 +117,7 @@ Set up the complete development environment, project structure, and database sch
 - [x] Apply all migrations to Supabase
 
 #### 0.5 Row Level Security (RLS) Setup
+
 - [x] Enable RLS on all tables
 - [x] Create helper function `get_user_org_ids()`
 - [x] Create helper function `get_user_role(org UUID)`
@@ -128,6 +134,7 @@ Set up the complete development environment, project structure, and database sch
 - [x] Create RLS policies for `billing_subscriptions` (owner only)
 
 #### 0.6 Supabase Storage Setup
+
 - [x] Create `job-photos` bucket
 - [x] Configure bucket as private (not public)
 - [x] Create storage policies for upload (authenticated + own org/job)
@@ -135,6 +142,7 @@ Set up the complete development environment, project structure, and database sch
 - [x] Test upload/download with Supabase client
 
 #### 0.7 Project Structure Setup
+
 - [x] Create folder structure as per spec:
   ```
   app/
@@ -160,6 +168,7 @@ Set up the complete development environment, project structure, and database sch
 - [x] Create Zod schemas for form validation (`lib/validations/`)
 
 ### Definition of Done
+
 - [x] `npm run dev` starts without errors
 - [x] Supabase connection verified
 - [x] All database tables created and RLS enabled
@@ -174,11 +183,13 @@ Set up the complete development environment, project structure, and database sch
 ## Phase 1: Authentication & Authorization
 
 ### Objective
+
 Implement complete authentication flow including registration, login, magic links, and invitation system.
 
 ### Tasks
 
 #### 1.1 Supabase Auth Configuration
+
 - [x] Enable Email/Password auth in Supabase dashboard
 - [x] Enable Magic Link auth in Supabase dashboard
 - [ ] Configure email templates for:
@@ -189,6 +200,7 @@ Implement complete authentication flow including registration, login, magic link
 - [ ] Configure auth settings (token expiry, etc.)
 
 #### 1.2 Auth Utility Functions
+
 - [x] Create `lib/supabase/client.ts` for browser client
 - [x] Create `lib/supabase/server.ts` for server components
 - [x] Create `lib/supabase/middleware.ts` for session handling
@@ -202,6 +214,7 @@ Implement complete authentication flow including registration, login, magic link
 - [x] Create middleware to protect routes
 
 #### 1.3 Registration Flow (Owner)
+
 - [x] Create `app/(auth)/register/page.tsx`
 - [x] Build registration form component with:
   - Email input with validation
@@ -215,6 +228,7 @@ Implement complete authentication flow including registration, login, magic link
 - [ ] Create email verification success page
 
 #### 1.4 Login Flow
+
 - [x] Create `app/(auth)/login/page.tsx`
 - [x] Build login form component with:
   - Email input
@@ -231,6 +245,7 @@ Implement complete authentication flow including registration, login, magic link
 - [x] Redirect to dashboard or onboarding after login
 
 #### 1.5 Session Management
+
 - [x] Implement middleware for protected routes
 - [ ] Create auth context/provider for client components
 - [x] Handle session refresh automatically
@@ -239,6 +254,7 @@ Implement complete authentication flow including registration, login, magic link
 - [x] Redirect to login on session expiry
 
 #### 1.6 User Profile & Onboarding Detection
+
 - [ ] Create hook to check if user has completed onboarding
 - [x] Query `org_members` to check if user belongs to any org
 - [ ] If no org: redirect to onboarding flow
@@ -246,6 +262,7 @@ Implement complete authentication flow including registration, login, magic link
 - [ ] Store user preferences in local storage
 
 #### 1.7 Invitation System (Basic)
+
 - [x] Create `app/(auth)/invite/[token]/page.tsx`
 - [x] Create invitation token generation function
 - [x] Create API route `POST /api/auth/invite` for sending invitations
@@ -259,6 +276,7 @@ Implement complete authentication flow including registration, login, magic link
 - [x] Update `org_members` on successful acceptance
 
 #### 1.8 Role-Based Route Protection
+
 - [x] Create role checking utility function
 - [ ] Create higher-order component/hook for role guards
 - [x] Protect dashboard routes (require auth)
@@ -267,6 +285,7 @@ Implement complete authentication flow including registration, login, magic link
 - [ ] Show 403 page for unauthorized access
 
 ### Definition of Done
+
 - [x] User can register with email/password
 - [ ] User can register with magic link
 - [x] User can login with email/password
@@ -284,11 +303,13 @@ Implement complete authentication flow including registration, login, magic link
 ## Phase 2: Core Data Management
 
 ### Objective
+
 Implement CRUD operations for Organizations, Sites, and Checklist Templates with proper UI.
 
 ### Tasks
 
 #### 2.1 Dashboard Layout
+
 - [ ] Create `app/(dashboard)/layout.tsx`
 - [ ] Build responsive sidebar navigation with:
   - Dashboard link
@@ -308,6 +329,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 - [ ] Add breadcrumb component
 
 #### 2.2 Organization Management
+
 - [ ] Create onboarding flow for new users:
   - Step 1: Create organization (name)
   - Step 2: Create first site
@@ -322,6 +344,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 - [ ] Add organization delete with confirmation (soft delete)
 
 #### 2.3 Sites CRUD
+
 - [ ] Create `app/(dashboard)/sites/page.tsx` - list view
 - [ ] Build sites list component with:
   - Site name
@@ -346,6 +369,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 - [ ] Show toast notifications for success/error
 
 #### 2.4 Checklist Templates CRUD
+
 - [ ] Create `app/(dashboard)/templates/page.tsx` - list view
 - [ ] Build templates list component with:
   - Template name
@@ -360,6 +384,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 - [ ] Create `app/(dashboard)/templates/[id]/edit/page.tsx`
 
 #### 2.5 Checklist Items Management
+
 - [ ] Build checklist items editor component with:
   - Drag-and-drop reordering
   - Add new item button
@@ -385,6 +410,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 - [ ] Add template duplication functionality
 
 #### 2.6 Team Management
+
 - [ ] Create `app/(dashboard)/team/page.tsx`
 - [ ] Build team members list with:
   - Name/Email
@@ -408,6 +434,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
   - `POST /api/team/[id]/resend` - resend invitation
 
 #### 2.7 Dashboard Home
+
 - [ ] Create `app/(dashboard)/page.tsx`
 - [ ] Build dashboard overview with:
   - Quick stats cards:
@@ -422,6 +449,7 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 - [ ] Add subscription status banner (trial days remaining, etc.)
 
 ### Definition of Done
+
 - [ ] Dashboard layout renders correctly on desktop and mobile
 - [ ] Organization settings can be viewed and edited
 - [ ] Sites can be created, listed, edited, and deactivated
@@ -436,30 +464,33 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 ## Phase 3: Job Management Foundation
 
 ### Objective
+
 Implement job creation, assignment, listing, and status management (state machine).
 
 ### Tasks
 
 #### 3.1 Job Status State Machine
+
 - [ ] Create `lib/jobs/status-machine.ts`
 - [ ] Define allowed transitions:
   ```typescript
   const transitions = {
-    scheduled: ['in_progress', 'cancelled'],
-    in_progress: ['submitted', 'cancelled'],
-    submitted: ['approved', 'rejected'],
-    rejected: ['in_progress'],
+    scheduled: ["in_progress", "cancelled"],
+    in_progress: ["submitted", "cancelled"],
+    submitted: ["approved", "rejected"],
+    rejected: ["in_progress"],
     approved: [],
-    cancelled: []
-  }
+    cancelled: [],
+  };
   ```
 - [ ] Create transition validation function
 - [ ] Create role-based transition permissions:
   - Worker: scheduled→in_progress, in_progress→submitted, rejected→in_progress
-  - Manager/Owner: *→cancelled, submitted→approved, submitted→rejected
+  - Manager/Owner: \*→cancelled, submitted→approved, submitted→rejected
 - [ ] Create status transition helper with validation
 
 #### 3.2 Job Creation
+
 - [ ] Create `app/(dashboard)/jobs/new/page.tsx`
 - [ ] Build job creation form:
   - Site selector (dropdown)
@@ -473,6 +504,7 @@ Implement job creation, assignment, listing, and status management (state machin
 - [ ] Send notification email to assigned worker
 
 #### 3.3 Job Listing (Manager/Owner View)
+
 - [ ] Create `app/(dashboard)/jobs/page.tsx`
 - [ ] Build jobs list view with:
   - Filter by status (tabs or dropdown)
@@ -492,6 +524,7 @@ Implement job creation, assignment, listing, and status management (state machin
 - [ ] Implement `GET /api/jobs` endpoint with filters
 
 #### 3.4 Job Detail View (Manager/Owner)
+
 - [ ] Create `app/(dashboard)/jobs/[id]/page.tsx`
 - [ ] Build job detail view with:
   - Job header (site, date, status, worker)
@@ -504,6 +537,7 @@ Implement job creation, assignment, listing, and status management (state machin
 - [ ] Implement `GET /api/jobs/[id]` endpoint
 
 #### 3.5 Job Cancellation
+
 - [ ] Add cancel button to job detail (manager/owner only)
 - [ ] Show confirmation dialog with reason input
 - [ ] Implement `POST /api/jobs/[id]/cancel` endpoint
@@ -512,6 +546,7 @@ Implement job creation, assignment, listing, and status management (state machin
 - [ ] Send notification to assigned worker
 
 #### 3.6 Job Assignment/Reassignment
+
 - [ ] Add reassign option to job detail
 - [ ] Show worker selector dialog
 - [ ] Implement `PUT /api/jobs/[id]/assign` endpoint
@@ -520,6 +555,7 @@ Implement job creation, assignment, listing, and status management (state machin
 - [ ] Notify old worker of reassignment
 
 ### Definition of Done
+
 - [ ] Status machine correctly validates all transitions
 - [ ] Jobs can be created with all required fields
 - [ ] Job list shows correct data with working filters
@@ -533,6 +569,7 @@ Implement job creation, assignment, listing, and status management (state machin
 ## Phase 4: Worker Flow (Priority)
 
 ### Objective
+
 Implement the complete worker experience including mobile-optimized UI, job execution, photo capture, and submission.
 
 **This is the highest priority phase - it demonstrates the core product value.**
@@ -540,6 +577,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 ### Tasks
 
 #### 4.1 Worker Layout & Navigation
+
 - [ ] Create `app/(worker)/layout.tsx`
 - [ ] Design mobile-first layout with:
   - Bottom navigation bar (Today, All Jobs, Profile)
@@ -550,6 +588,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Add loading skeletons for async data
 
 #### 4.2 Today's Jobs View
+
 - [ ] Create `app/(worker)/today/page.tsx`
 - [ ] Build today's jobs list with:
   - Jobs scheduled for today
@@ -566,6 +605,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Implement `GET /api/worker/jobs/today` endpoint
 
 #### 4.3 All Jobs View (Worker)
+
 - [ ] Create `app/(worker)/jobs/page.tsx`
 - [ ] Build jobs list with:
   - Filter by status
@@ -575,6 +615,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Implement pagination or infinite scroll
 
 #### 4.4 Job Detail View (Worker)
+
 - [ ] Create `app/(worker)/job/[id]/page.tsx`
 - [ ] Build job header with:
   - Site name and address
@@ -585,6 +626,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Show progress indicator (X of Y completed)
 
 #### 4.5 Job Start Flow
+
 - [ ] Implement "Start Job" button action
 - [ ] Call `POST /api/jobs/[id]/start` endpoint
 - [ ] Validate: user is assigned, status is 'scheduled'
@@ -593,6 +635,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Navigate to checklist execution view
 
 #### 4.6 Checklist Item Execution
+
 - [ ] Create checklist item component with:
   - Item title and description
   - Status selector (Pass/Fail/N.A.) - radio buttons or buttons
@@ -606,6 +649,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Show validation if required photo missing
 
 #### 4.7 Camera Component
+
 - [ ] Create `components/camera/CameraCapture.tsx`
 - [ ] Implement custom camera UI with:
   - Full-screen camera preview
@@ -626,6 +670,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
   - Use photo button
 
 #### 4.8 Photo Upload
+
 - [ ] Create `components/camera/PhotoPreview.tsx`
 - [ ] Implement photo upload flow:
   - Show upload progress indicator
@@ -641,6 +686,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Show uploaded photos in checklist item
 
 #### 4.9 Photo Gallery in Job
+
 - [ ] Create photo gallery component
 - [ ] Display all photos for the job
 - [ ] Show photos grouped by checklist item
@@ -649,6 +695,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Allow deleting photos (before submission)
 
 #### 4.10 Quick Mode
+
 - [ ] Add "Quick Mode" toggle/button
 - [ ] Implement bulk status update:
   - Set all items to 'pass'
@@ -660,6 +707,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Allow switching back to normal mode
 
 #### 4.11 Notes Input
+
 - [ ] Create note input component
 - [ ] Show for items with `requires_note = true`
 - [ ] Allow optional notes on any item
@@ -667,6 +715,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Auto-save notes
 
 #### 4.12 Job Submission
+
 - [ ] Create job summary view before submission:
   - List of all items with status
   - Missing required items highlighted
@@ -683,6 +732,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Navigate to Today view
 
 #### 4.13 Post-Submission View (Read-Only)
+
 - [ ] After submission, job becomes read-only for worker
 - [ ] Show submitted status clearly
 - [ ] Allow viewing all photos and notes
@@ -690,6 +740,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] If rejected: show review comment and re-enable editing
 
 #### 4.14 Rejected Job Rework
+
 - [ ] Show rejected jobs prominently in Today view
 - [ ] Display reviewer comment clearly
 - [ ] Allow worker to re-open and edit
@@ -698,6 +749,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Allow re-submission
 
 #### 4.15 State Persistence (localStorage)
+
 - [ ] Save current job state to localStorage:
   - Current screen/step
   - In-progress item results
@@ -708,6 +760,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Implement `useLocalStorageState` hook
 
 #### 4.16 PWA Setup
+
 - [ ] Create `manifest.json` with:
   - App name and short name
   - Icons (multiple sizes)
@@ -719,6 +772,7 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 - [ ] Verify camera works in standalone mode
 
 ### Definition of Done
+
 - [ ] Worker can see today's assigned jobs
 - [ ] Worker can start a scheduled job
 - [ ] Worker can complete checklist items (pass/fail/na)
@@ -738,17 +792,20 @@ Implement the complete worker experience including mobile-optimized UI, job exec
 ## Phase 5: Review & Approval Flow
 
 ### Objective
+
 Implement the manager review workflow including pending reviews list, detail view, and approve/reject actions.
 
 ### Tasks
 
 #### 5.1 Pending Reviews Badge
+
 - [ ] Create `lib/hooks/usePendingReviewCount.ts`
 - [ ] Query jobs with status='submitted' for user's org
 - [ ] Display badge in sidebar navigation
 - [ ] Update badge count in real-time (polling or subscription)
 
 #### 5.2 Review List View
+
 - [ ] Create `app/(dashboard)/review/page.tsx`
 - [ ] Build pending reviews list with:
   - Jobs with status='submitted'
@@ -765,6 +822,7 @@ Implement the manager review workflow including pending reviews list, detail vie
 - [ ] Show empty state when no pending reviews
 
 #### 5.3 Review Detail View
+
 - [ ] Create `app/(dashboard)/review/[id]/page.tsx`
 - [ ] Build comprehensive review view with:
   - Job header (site, worker, date)
@@ -780,6 +838,7 @@ Implement the manager review workflow including pending reviews list, detail vie
   - Previous comments (if job was rejected before)
 
 #### 5.4 Photo Viewer Component
+
 - [ ] Create `components/PhotoViewer.tsx`
 - [ ] Implement full-screen photo modal:
   - Swipe between photos
@@ -790,6 +849,7 @@ Implement the manager review workflow including pending reviews list, detail vie
 - [ ] Support keyboard navigation (arrows, escape)
 
 #### 5.5 Approve Action
+
 - [ ] Add "Approve" button to review detail
 - [ ] Show confirmation dialog
 - [ ] Implement `POST /api/jobs/[id]/review` endpoint:
@@ -803,6 +863,7 @@ Implement the manager review workflow including pending reviews list, detail vie
 - [ ] Navigate back to review list
 
 #### 5.6 Reject Action
+
 - [ ] Add "Reject" button to review detail
 - [ ] Show rejection dialog with:
   - Required comment field
@@ -818,18 +879,21 @@ Implement the manager review workflow including pending reviews list, detail vie
 - [ ] Navigate back to review list
 
 #### 5.7 Review Comments/Notes
+
 - [ ] Create `job_comments` handling
 - [ ] Allow manager to add internal notes
 - [ ] Display comment history on job detail
 - [ ] Notes are NOT shown in client report
 
 #### 5.8 Bulk Review (Optional Enhancement)
+
 - [ ] Add checkbox selection to review list
 - [ ] Add "Approve Selected" button
 - [ ] Show confirmation with count
 - [ ] Process approvals in batch
 
 ### Definition of Done
+
 - [ ] Pending review badge shows correct count
 - [ ] Review list shows all submitted jobs
 - [ ] Review detail shows complete job information
@@ -844,11 +908,13 @@ Implement the manager review workflow including pending reviews list, detail vie
 ## Phase 6: PDF Report & Client Sharing
 
 ### Objective
+
 Implement PDF report generation, public share links, and client-facing report page.
 
 ### Tasks
 
 #### 6.1 PDF Generation Setup
+
 - [ ] Install pdfkit: `npm install pdfkit`
 - [ ] Create `lib/pdf/generator.ts`
 - [ ] Set up PDF document with:
@@ -861,6 +927,7 @@ Implement PDF report generation, public share links, and client-facing report pa
   - Photo page
 
 #### 6.2 PDF Layout Implementation
+
 - [ ] Implement header section:
   - "Qualitätsbericht" title
   - Organization name
@@ -882,6 +949,7 @@ Implement PDF report generation, public share links, and client-facing report pa
 - [ ] Add generation date footer
 
 #### 6.3 PDF Generation API
+
 - [ ] Create `POST /api/jobs/[id]/generate-pdf` endpoint
 - [ ] Fetch job with all related data:
   - Job details
@@ -893,6 +961,7 @@ Implement PDF report generation, public share links, and client-facing report pa
 - [ ] Return PDF URL or path
 
 #### 6.4 Share Link Generation
+
 - [ ] Create `lib/utils/token.ts`
 - [ ] Generate short URL-safe token (8-12 chars using nanoid)
 - [ ] Create `POST /api/jobs/[id]/share` endpoint:
@@ -905,6 +974,7 @@ Implement PDF report generation, public share links, and client-facing report pa
 - [ ] Handle duplicate share creation (return existing if active)
 
 #### 6.5 Share Management UI
+
 - [ ] Add "Share Report" button to approved job detail
 - [ ] Show share dialog with:
   - Generated link
@@ -922,6 +992,7 @@ Implement PDF report generation, public share links, and client-facing report pa
   - Actions (copy, revoke)
 
 #### 6.6 Share Link Revocation
+
 - [ ] Add revoke button to share management
 - [ ] Show confirmation dialog
 - [ ] Implement `DELETE /api/shares/[token]` endpoint
@@ -929,6 +1000,7 @@ Implement PDF report generation, public share links, and client-facing report pa
 - [ ] Link immediately becomes invalid
 
 #### 6.7 Public Report Page (Web View)
+
 - [ ] Create `app/r/[token]/page.tsx`
 - [ ] Validate token:
   - Check token exists
@@ -952,6 +1024,7 @@ Implement PDF report generation, public share links, and client-facing report pa
   - NO navigation
 
 #### 6.8 PDF Download
+
 - [ ] Create `app/r/[token]/pdf/route.ts`
 - [ ] Validate token (same as web view)
 - [ ] Fetch PDF from storage
@@ -962,6 +1035,7 @@ Implement PDF report generation, public share links, and client-facing report pa
 - [ ] Track download (optional, not in MVP)
 
 #### 6.9 Email Sharing (Optional)
+
 - [ ] Add email input to share dialog
 - [ ] Create email template for share notification
 - [ ] Send email with:
@@ -971,6 +1045,7 @@ Implement PDF report generation, public share links, and client-facing report pa
 - [ ] Use email provider (configure in Phase 8)
 
 ### Definition of Done
+
 - [ ] PDF generates with correct layout
 - [ ] PDF includes all checklist items and photos
 - [ ] PDF excludes worker name and timestamps
@@ -986,11 +1061,13 @@ Implement PDF report generation, public share links, and client-facing report pa
 ## Phase 7: Billing & Subscription
 
 ### Objective
+
 Implement Stripe integration, trial management, subscription plans, and limit enforcement.
 
 ### Tasks
 
 #### 7.1 Stripe Account Setup
+
 - [ ] Create Stripe account
 - [ ] Configure test mode
 - [ ] Create products and prices:
@@ -1001,6 +1078,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Set up webhook signing secret
 
 #### 7.2 Environment Configuration
+
 - [ ] Add Stripe environment variables:
   ```
   STRIPE_SECRET_KEY=
@@ -1012,6 +1090,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Create `lib/stripe/client.ts` with Stripe initialization
 
 #### 7.3 Trial Initialization
+
 - [ ] On organization creation:
   - Create `billing_subscriptions` record
   - Set status to 'trialing'
@@ -1021,6 +1100,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Create hook `useSubscriptionStatus()`
 
 #### 7.4 Billing Dashboard
+
 - [ ] Create `app/(dashboard)/billing/page.tsx`
 - [ ] Build billing overview with:
   - Current plan name
@@ -1035,6 +1115,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Add upgrade buttons
 
 #### 7.5 Checkout Flow
+
 - [ ] Create `POST /api/stripe/checkout` endpoint:
   - Validate user is owner
   - Create Stripe customer (if not exists)
@@ -1050,6 +1131,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Create cancel page (redirect back to billing)
 
 #### 7.6 Webhook Handler
+
 - [ ] Create `POST /api/stripe/webhook` endpoint
 - [ ] Verify webhook signature
 - [ ] Handle events:
@@ -1069,6 +1151,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Log all webhook events for debugging
 
 #### 7.7 Customer Portal
+
 - [ ] Create `POST /api/stripe/portal` endpoint:
   - Validate user is owner
   - Create Customer Portal session
@@ -1080,12 +1163,13 @@ Implement Stripe integration, trial management, subscription plans, and limit en
   - Allow plan changes (upgrades only in MVP)
 
 #### 7.8 Limit Enforcement
+
 - [ ] Create `lib/billing/limits.ts`:
   ```typescript
   const PLAN_LIMITS = {
     starter: { sites: 1, users: 3, jobsPerMonth: 50 },
-    pro: { sites: Infinity, users: Infinity, jobsPerMonth: Infinity }
-  }
+    pro: { sites: Infinity, users: Infinity, jobsPerMonth: Infinity },
+  };
   ```
 - [ ] Create usage counting functions:
   - `getActiveSiteCount(orgId)`
@@ -1099,12 +1183,14 @@ Implement Stripe integration, trial management, subscription plans, and limit en
   - Block action after grace period
 
 #### 7.9 Limit UI Feedback
+
 - [ ] Add usage indicators to relevant pages
 - [ ] Show warning toast when approaching limits
 - [ ] Disable buttons when at limit with upgrade prompt
 - [ ] Add upgrade CTA to blocked actions
 
 #### 7.10 Trial End Handling
+
 - [ ] Create trial expiration check
 - [ ] On trial end without subscription:
   - Set status to 'unpaid'
@@ -1118,6 +1204,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
   - Reports remain accessible
 
 #### 7.11 Trial Email Notifications
+
 - [ ] Create email templates:
   - 7 days before trial end
   - 3 days before trial end
@@ -1129,6 +1216,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Track emails sent (avoid duplicates)
 
 #### 7.12 Subscription Status Banner
+
 - [ ] Create subscription banner component
 - [ ] Show on all dashboard pages when:
   - Trial ending soon (≤7 days)
@@ -1138,6 +1226,7 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 - [ ] Include relevant CTA (upgrade, update payment, etc.)
 
 ### Definition of Done
+
 - [ ] Trial starts automatically on org creation
 - [ ] Billing page shows correct status and usage
 - [ ] Stripe Checkout works end-to-end
@@ -1154,11 +1243,13 @@ Implement Stripe integration, trial management, subscription plans, and limit en
 ## Phase 8: Polish & Production Readiness
 
 ### Objective
+
 Final polish, error handling, notifications, and production deployment preparation.
 
 ### Tasks
 
 #### 8.1 Error Handling Improvements
+
 - [ ] Create global error boundary component
 - [ ] Implement consistent error display:
   - Toast for minor errors
@@ -1174,12 +1265,14 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Log errors to console (prepare for monitoring)
 
 #### 8.2 Loading States
+
 - [ ] Add loading skeletons to all list views
 - [ ] Add loading spinners to buttons during actions
 - [ ] Add page transition loading indicator
 - [ ] Optimize perceived performance
 
 #### 8.3 Email Notifications Setup
+
 - [ ] Choose and configure email provider (e.g., Resend)
 - [ ] Create email templates:
   - Invitation email
@@ -1194,12 +1287,14 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Test all email flows
 
 #### 8.4 In-App Notifications
+
 - [ ] Create notification badge component
 - [ ] Implement pending review badge (already done)
 - [ ] Add subscription warning indicators
 - [ ] Consider polling for updates (Supabase realtime post-MVP)
 
 #### 8.5 Feedback Widget
+
 - [ ] Choose feedback solution (Crisp, custom, etc.)
 - [ ] Integrate feedback widget:
   - Floating button on web (bottom-right)
@@ -1212,6 +1307,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Include user context automatically
 
 #### 8.6 PWA Finalization
+
 - [ ] Complete manifest.json configuration
 - [ ] Create app icons (all required sizes)
 - [ ] Implement service worker:
@@ -1225,6 +1321,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Add install prompt at appropriate times
 
 #### 8.7 Seed Data
+
 - [ ] Create seed script for demo data:
   - Demo organization
   - Demo sites
@@ -1236,6 +1333,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Document seed usage
 
 #### 8.8 Security Audit
+
 - [ ] Review all RLS policies
 - [ ] Test cross-org data access (should fail)
 - [ ] Test worker accessing other worker's jobs (should fail)
@@ -1246,6 +1344,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Verify Stripe webhook signature validation
 
 #### 8.9 Performance Optimization
+
 - [ ] Audit bundle size
 - [ ] Implement code splitting for routes
 - [ ] Optimize images (next/image)
@@ -1257,6 +1356,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Profile slow queries
 
 #### 8.10 Accessibility Audit
+
 - [ ] Test keyboard navigation
 - [ ] Verify screen reader compatibility
 - [ ] Check color contrast ratios
@@ -1264,6 +1364,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Test with reduced motion preferences
 
 #### 8.11 Browser/Device Testing
+
 - [ ] Test on Chrome (desktop + mobile)
 - [ ] Test on Safari (desktop + mobile)
 - [ ] Test on Firefox
@@ -1275,6 +1376,7 @@ Final polish, error handling, notifications, and production deployment preparati
   - Desktop browsers
 
 #### 8.12 Documentation
+
 - [ ] Update README with:
   - Project overview
   - Setup instructions
@@ -1285,6 +1387,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Document database schema
 
 #### 8.13 Production Environment Setup
+
 - [ ] Create production Supabase project
 - [ ] Run migrations on production
 - [ ] Configure production environment variables
@@ -1294,6 +1397,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Configure SSL
 
 #### 8.14 Vercel Deployment
+
 - [ ] Connect repository to Vercel
 - [ ] Configure environment variables in Vercel
 - [ ] Set up production branch
@@ -1302,6 +1406,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Set up deployment notifications
 
 #### 8.15 Launch Checklist
+
 - [ ] Final testing on production
 - [ ] Verify Stripe webhooks in production
 - [ ] Test complete user flows:
@@ -1314,6 +1419,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Prepare rollback plan
 
 ### Definition of Done
+
 - [ ] All error states handled gracefully
 - [ ] Loading states provide good UX
 - [ ] All emails send correctly
@@ -1335,6 +1441,7 @@ Final polish, error handling, notifications, and production deployment preparati
 ### Phase 9: Post-MVP Enhancements (Based on Spec Phase 2)
 
 #### 9.1 Recurring Jobs
+
 - [ ] Design recurring job rules (daily, weekly, monthly)
 - [ ] Create recurrence configuration UI
 - [ ] Implement job auto-generation
@@ -1342,6 +1449,7 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Add recurring job management
 
 #### 9.2 Offline Support / Local Sync
+
 - [ ] Implement offline data storage (IndexedDB)
 - [ ] Queue actions when offline
 - [ ] Sync when back online
@@ -1349,24 +1457,28 @@ Final polish, error handling, notifications, and production deployment preparati
 - [ ] Offline indicator
 
 #### 9.3 Multi-Org Support
+
 - [ ] Design org switcher UI
 - [ ] Allow user to belong to multiple orgs
 - [ ] Implement org context switching
 - [ ] Handle permissions across orgs
 
 #### 9.4 Downgrade Handling
+
 - [ ] Implement downgrade flow (Pro → Starter)
 - [ ] Site/user selection when over limits
 - [ ] Data preservation strategy
 - [ ] Grace period for adjustment
 
 #### 9.5 GDPR Data Export
+
 - [ ] Implement data export endpoint
 - [ ] Generate downloadable archive
 - [ ] Include all user data
 - [ ] Document export format
 
 #### 9.6 Monitoring & Error Tracking
+
 - [ ] Set up Sentry (or similar)
 - [ ] Configure error grouping
 - [ ] Set up alerts
@@ -1407,14 +1519,18 @@ Phase 0: Foundation
 ```
 
 ### Critical Path
+
 Every phase depends on the previous one. The critical path runs through all phases sequentially.
 
 ### Parallel Work Opportunities
+
 Limited parallel work due to solo developer:
+
 - Phase 7 (Billing) could start during Phase 6 (API parts)
 - Phase 8 (Polish) tasks can be done incrementally throughout
 
 ### External Dependencies
+
 - **Supabase**: Database, Auth, Storage (Phase 0)
 - **Stripe**: Payment processing (Phase 7)
 - **Email Provider**: Notifications (Phase 8)
@@ -1426,28 +1542,28 @@ Limited parallel work due to solo developer:
 
 ### High Risk
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Camera API issues on mobile | Cannot capture photos (core feature) | Medium | Test early on real devices; have fallback file input |
-| Stripe integration complexity | Cannot process payments | Low | Use Stripe's well-documented patterns; start with test mode |
-| Photo upload reliability | Data loss, poor UX | Medium | Implement robust retry logic; local storage queue |
-| Supabase RLS misconfiguration | Security breach | Medium | Thorough testing; security audit before launch |
+| Risk                          | Impact                               | Likelihood | Mitigation                                                  |
+| ----------------------------- | ------------------------------------ | ---------- | ----------------------------------------------------------- |
+| Camera API issues on mobile   | Cannot capture photos (core feature) | Medium     | Test early on real devices; have fallback file input        |
+| Stripe integration complexity | Cannot process payments              | Low        | Use Stripe's well-documented patterns; start with test mode |
+| Photo upload reliability      | Data loss, poor UX                   | Medium     | Implement robust retry logic; local storage queue           |
+| Supabase RLS misconfiguration | Security breach                      | Medium     | Thorough testing; security audit before launch              |
 
 ### Medium Risk
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| PDF generation performance | Slow report creation | Medium | Pre-generate on approval; optimize image sizes |
-| PWA installation issues | Poor mobile adoption | Medium | Thorough device testing; fallback to web |
-| Email deliverability | Users miss notifications | Medium | Use reputable provider; monitor bounces |
-| Browser compatibility | Features don't work | Low | Regular cross-browser testing |
+| Risk                       | Impact                   | Likelihood | Mitigation                                     |
+| -------------------------- | ------------------------ | ---------- | ---------------------------------------------- |
+| PDF generation performance | Slow report creation     | Medium     | Pre-generate on approval; optimize image sizes |
+| PWA installation issues    | Poor mobile adoption     | Medium     | Thorough device testing; fallback to web       |
+| Email deliverability       | Users miss notifications | Medium     | Use reputable provider; monitor bounces        |
+| Browser compatibility      | Features don't work      | Low        | Regular cross-browser testing                  |
 
 ### Low Risk
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Scope creep | Delayed launch | Medium | Strict MVP adherence; defer to post-MVP |
-| Third-party service outage | Temporary downtime | Low | Choose reliable providers; have fallback plans |
+| Risk                       | Impact             | Likelihood | Mitigation                                     |
+| -------------------------- | ------------------ | ---------- | ---------------------------------------------- |
+| Scope creep                | Delayed launch     | Medium     | Strict MVP adherence; defer to post-MVP        |
+| Third-party service outage | Temporary downtime | Low        | Choose reliable providers; have fallback plans |
 
 ### Mitigation Strategies
 
@@ -1462,6 +1578,7 @@ Limited parallel work due to solo developer:
 ## Testing Strategy
 
 ### Unit Testing
+
 - **Framework**: Jest + React Testing Library
 - **Coverage Target**: 70% for critical paths
 - **Focus Areas**:
@@ -1472,6 +1589,7 @@ Limited parallel work due to solo developer:
   - PDF generation
 
 ### Integration Testing
+
 - **Framework**: Jest with Supabase test helpers
 - **Focus Areas**:
   - API endpoint behavior
@@ -1480,6 +1598,7 @@ Limited parallel work due to solo developer:
   - Auth flows
 
 ### End-to-End Testing
+
 - **Framework**: Playwright or Cypress
 - **Critical Flows to Test**:
   1. Owner registration → onboarding → first job
@@ -1490,6 +1609,7 @@ Limited parallel work due to solo developer:
   6. Invitation → acceptance → org access
 
 ### Manual Testing Checklist
+
 - [ ] All forms submit correctly
 - [ ] All buttons have loading states
 - [ ] Error messages display appropriately
@@ -1502,17 +1622,17 @@ Limited parallel work due to solo developer:
 
 ### Testing Milestones
 
-| Phase | Testing Focus |
-|-------|---------------|
-| 0 | Database schema, RLS policies |
-| 1 | Auth flows, session management |
-| 2 | CRUD operations, permissions |
-| 3 | Status machine, job lifecycle |
-| 4 | Camera, upload, mobile UX (critical!) |
-| 5 | Review workflow |
-| 6 | PDF generation, share links |
-| 7 | Stripe integration, webhooks |
-| 8 | Full E2E, cross-browser, security |
+| Phase | Testing Focus                         |
+| ----- | ------------------------------------- |
+| 0     | Database schema, RLS policies         |
+| 1     | Auth flows, session management        |
+| 2     | CRUD operations, permissions          |
+| 3     | Status machine, job lifecycle         |
+| 4     | Camera, upload, mobile UX (critical!) |
+| 5     | Review workflow                       |
+| 6     | PDF generation, share links           |
+| 7     | Stripe integration, webhooks          |
+| 8     | Full E2E, cross-browser, security     |
 
 ---
 
@@ -1520,12 +1640,12 @@ Limited parallel work due to solo developer:
 
 ### Environments
 
-| Environment | Purpose | URL |
-|-------------|---------|-----|
-| Local | Development | localhost:3000 |
-| Preview | PR reviews | [branch].vercel.app |
-| Staging | Pre-production testing | staging.example.com |
-| Production | Live application | app.example.com |
+| Environment | Purpose                | URL                 |
+| ----------- | ---------------------- | ------------------- |
+| Local       | Development            | localhost:3000      |
+| Preview     | PR reviews             | [branch].vercel.app |
+| Staging     | Pre-production testing | staging.example.com |
+| Production  | Live application       | app.example.com     |
 
 ### Deployment Flow
 
@@ -1557,16 +1677,19 @@ Local Development
 ### Environment Configuration
 
 #### Local
+
 - Supabase local or dev project
 - Stripe test mode
 - Email via console logging
 
 #### Preview/Staging
+
 - Dedicated Supabase project
 - Stripe test mode
 - Real email provider (sandboxed)
 
 #### Production
+
 - Production Supabase project
 - Stripe live mode
 - Production email provider
@@ -1644,5 +1767,5 @@ npm run test:e2e
 
 ---
 
-*Plan created based on SPEC.md v1.0*  
-*Last updated: [Current Date]*
+_Plan created based on SPEC.md v1.0_  
+_Last updated: [Current Date]_

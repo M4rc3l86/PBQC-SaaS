@@ -11,9 +11,12 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Passwort vergessen?</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Passwort vergessen?
+        </h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.
+          Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum
+          Zurücksetzen Ihres Passworts.
         </p>
       </div>
 

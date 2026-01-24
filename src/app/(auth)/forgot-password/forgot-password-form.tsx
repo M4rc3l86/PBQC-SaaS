@@ -9,12 +9,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { resetPasswordSchema, type ResetPasswordInput } from "@/lib/validations/auth";
+import {
+  resetPasswordSchema,
+  type ResetPasswordInput,
+} from "@/lib/validations/auth";
 import { resetPassword } from "@/lib/auth/actions";
 
 export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const form = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
@@ -61,9 +67,9 @@ export function ForgotPasswordForm() {
           {message && (
             <div
               className={`p-3 rounded-md text-sm ${
-                message.type === "error"
-                  ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                  : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                message.type === "error" ?
+                  "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
               }`}
             >
               {message.text}

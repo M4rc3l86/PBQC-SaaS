@@ -32,10 +32,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
         </div>
 
         <div className="text-center">
-          <Link
-            href="/login"
-            className="text-primary hover:underline"
-          >
+          <Link href="/login" className="text-primary hover:underline">
             Zur Anmeldung
           </Link>
         </div>
@@ -51,10 +48,14 @@ export default async function InvitePage({ params }: InvitePageProps) {
     return (
       <>
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight">Einladung annehmen</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Einladung annehmen
+          </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Sie wurden eingeladen, <strong>{organization.name}</strong> als{" "}
-            <strong>{invitation.role === "manager" ? "Manager" : "Mitarbeiter"}</strong>{" "}
+            <strong>
+              {invitation.role === "manager" ? "Manager" : "Mitarbeiter"}
+            </strong>{" "}
             beizutreten.
           </p>
         </div>
@@ -73,8 +74,9 @@ export default async function InvitePage({ params }: InvitePageProps) {
             Falsche E-Mail-Adresse
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Diese Einladung wurde an <strong>{invitation.email}</strong> gesendet,
-            aber Sie sind mit <strong>{user.email}</strong> angemeldet.
+            Diese Einladung wurde an <strong>{invitation.email}</strong>{" "}
+            gesendet, aber Sie sind mit <strong>{user.email}</strong>{" "}
+            angemeldet.
           </p>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Bitte melden Sie sich mit der richtigen E-Mail-Adresse an.
@@ -82,10 +84,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
         </div>
 
         <div className="text-center space-y-2">
-          <Link
-            href="/login"
-            className="block text-primary hover:underline"
-          >
+          <Link href="/login" className="block text-primary hover:underline">
             Mit anderer E-Mail anmelden
           </Link>
         </div>
@@ -94,5 +93,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
   }
 
   // User is not logged in - redirect to register with invitation context
-  redirect(`/register?invite=${token}&email=${encodeURIComponent(invitation.email)}`);
+  redirect(
+    `/register?invite=${token}&email=${encodeURIComponent(invitation.email)}`,
+  );
 }

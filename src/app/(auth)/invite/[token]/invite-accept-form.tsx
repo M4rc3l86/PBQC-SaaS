@@ -13,7 +13,10 @@ interface InviteAcceptFormProps {
   organizationName: string;
 }
 
-export function InviteAcceptForm({ token, organizationName }: InviteAcceptFormProps) {
+export function InviteAcceptForm({
+  token,
+  organizationName,
+}: InviteAcceptFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();

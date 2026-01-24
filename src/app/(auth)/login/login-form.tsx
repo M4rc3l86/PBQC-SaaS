@@ -11,12 +11,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { loginSchema, magicLinkSchema, type LoginInput, type MagicLinkInput } from "@/lib/validations/auth";
+import {
+  loginSchema,
+  magicLinkSchema,
+  type LoginInput,
+  type MagicLinkInput,
+} from "@/lib/validations/auth";
 import { signIn, signInWithMagicLink } from "@/lib/auth/actions";
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const passwordForm = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -114,9 +122,9 @@ export function LoginForm() {
               {message && (
                 <div
                   className={`p-3 rounded-md text-sm ${
-                    message.type === "error"
-                      ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                      : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                    message.type === "error" ?
+                      "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                    : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
                   }`}
                 >
                   {message.text}
@@ -153,15 +161,16 @@ export function LoginForm() {
               </div>
 
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Wir senden Ihnen einen Link per E-Mail, mit dem Sie sich ohne Passwort anmelden können.
+                Wir senden Ihnen einen Link per E-Mail, mit dem Sie sich ohne
+                Passwort anmelden können.
               </p>
 
               {message && (
                 <div
                   className={`p-3 rounded-md text-sm ${
-                    message.type === "error"
-                      ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                      : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                    message.type === "error" ?
+                      "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                    : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
                   }`}
                 >
                   {message.text}

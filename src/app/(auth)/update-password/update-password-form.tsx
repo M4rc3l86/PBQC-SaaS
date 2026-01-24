@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Check, X } from "lucide-react";
 
@@ -9,12 +9,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { updatePasswordSchema, type UpdatePasswordInput } from "@/lib/validations/auth";
+import {
+  updatePasswordSchema,
+  type UpdatePasswordInput,
+} from "@/lib/validations/auth";
 import { updatePassword } from "@/lib/auth/actions";
 
 export function UpdatePasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const form = useForm<UpdatePasswordInput>({
     resolver: zodResolver(updatePasswordSchema),
@@ -24,7 +30,11 @@ export function UpdatePasswordForm() {
     },
   });
 
-  const password = form.watch("password");
+  const password = useWatch({
+    control: form.control,
+    name: "password",
+    defaultValue: "",
+  });
 
   const passwordRequirements = [
     { met: password.length >= 8, text: "Mindestens 8 Zeichen" },
@@ -68,12 +78,12 @@ export function UpdatePasswordForm() {
               <div className="mt-2 space-y-1">
                 {passwordRequirements.map((req, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
-                    {req.met ? (
+                    {req.met ?
                       <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <X className="h-4 w-4 text-gray-300" />
-                    )}
-                    <span className={req.met ? "text-green-600" : "text-gray-500"}>
+                    : <X className="h-4 w-4 text-gray-300" />}
+                    <span
+                      className={req.met ? "text-green-600" : "text-gray-500"}
+                    >
                       {req.text}
                     </span>
                   </div>
@@ -100,9 +110,9 @@ export function UpdatePasswordForm() {
           {message && (
             <div
               className={`p-3 rounded-md text-sm ${
-                message.type === "error"
-                  ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                  : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                message.type === "error" ?
+                  "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
               }`}
             >
               {message.text}

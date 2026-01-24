@@ -9,7 +9,7 @@ export async function updateSession(request: NextRequest) {
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
     {
       cookies: {
         getAll() {
@@ -39,12 +39,20 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Define public routes that don't require authentication
-  const publicRoutes = ["/", "/login", "/register", "/auth/callback", "/r/"];
+  const publicRoutes = [
+    "/",
+    "/login",
+    "/register",
+    "/auth/callback",
+    "/r/",
+    "/invite/",
+  ];
   const isPublicRoute = publicRoutes.some(
     (route) =>
       request.nextUrl.pathname === route ||
       request.nextUrl.pathname.startsWith("/r/") ||
-      request.nextUrl.pathname.startsWith("/auth/"),
+      request.nextUrl.pathname.startsWith("/auth/") ||
+      request.nextUrl.pathname.startsWith("/invite/"),
   );
 
   // Redirect unauthenticated users to login (except for public routes)

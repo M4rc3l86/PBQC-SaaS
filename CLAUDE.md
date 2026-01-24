@@ -6,20 +6,20 @@
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Framework | Next.js 16+ (App Router) |
-| Language | TypeScript (strict mode) |
-| Styling | Tailwind CSS 4 |
-| UI Components | shadcn/ui (new-york style) |
-| Database | Supabase (PostgreSQL) |
-| Auth | Supabase Auth (Email/Password + Magic Link) |
-| Storage | Supabase Storage |
-| Payments | Stripe |
-| PDF Generation | pdfkit |
-| Validation | Zod |
-| Forms | react-hook-form |
-| Hosting | Vercel |
+| Component      | Technology                                  |
+| -------------- | ------------------------------------------- |
+| Framework      | Next.js 16+ (App Router)                    |
+| Language       | TypeScript (strict mode)                    |
+| Styling        | Tailwind CSS 4                              |
+| UI Components  | shadcn/ui (new-york style)                  |
+| Database       | Supabase (PostgreSQL)                       |
+| Auth           | Supabase Auth (Email/Password + Magic Link) |
+| Storage        | Supabase Storage                            |
+| Payments       | Stripe                                      |
+| PDF Generation | pdfkit                                      |
+| Validation     | Zod                                         |
+| Forms          | react-hook-form                             |
+| Hosting        | Vercel                                      |
 
 ## Project Structure
 
@@ -68,11 +68,13 @@ npx supabase gen types typescript # Generate types
 ## Database Schema
 
 Located in `supabase/migrations/`:
+
 - `00001_initial_schema.sql` - Tables and ENUM types
 - `00002_rls_policies.sql` - Row Level Security policies
 - `00003_storage_setup.sql` - Storage buckets and policies
 
 ### Core Tables
+
 - `organizations` - Multi-tenant organizations
 - `org_members` - Organization membership with roles (owner/manager/worker)
 - `sites` - Physical locations for jobs
@@ -87,11 +89,11 @@ Located in `supabase/migrations/`:
 
 ## User Roles
 
-| Role | Description |
-|------|-------------|
-| Owner | Org admin, billing, full access |
+| Role    | Description                           |
+| ------- | ------------------------------------- |
+| Owner   | Org admin, billing, full access       |
 | Manager | Creates jobs, reviews, shares reports |
-| Worker | Executes assigned jobs, takes photos |
+| Worker  | Executes assigned jobs, takes photos  |
 
 ## Job Status Flow
 
@@ -104,9 +106,10 @@ scheduled → in_progress → submitted → approved
 ## Environment Variables
 
 Required in `.env.local`:
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 NEXT_PUBLIC_APP_URL=
 STRIPE_SECRET_KEY=
@@ -128,6 +131,7 @@ STRIPE_PRO_PRICE_ID=
 ## Implementation Status
 
 See `PLAN.md` for detailed phase tracking. Current progress:
+
 - Phase 0: Foundation & Setup - COMPLETED
 - Phase 1: Authentication & Authorization - IN PROGRESS
 - Phase 2-8: Pending

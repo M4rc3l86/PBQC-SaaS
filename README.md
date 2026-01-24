@@ -44,8 +44,9 @@ cp .env.example .env.local
 ```
 
 Required environment variables:
+
 - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` - Supabase anonymous key
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (server-side only)
 
 ### 4. Set up Supabase
@@ -187,6 +188,7 @@ npm run lint     # Run ESLint
 ### Email Setup (optional)
 
 Configure an email provider for notifications:
+
 - Invitation emails
 - Job assignment notifications
 - Review notifications
