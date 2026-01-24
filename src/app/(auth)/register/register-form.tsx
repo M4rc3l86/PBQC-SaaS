@@ -10,8 +10,81 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
-import { signUp } from "@/lib/auth/actions";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  registerSchema,
+  registerMagicLinkSchema,
+  type RegisterInput,
+  type RegisterMagicLinkInput,
+} from "@/lib/validations/auth";
+import { signUp, signInWithMagicLink } from "@/lib/auth/actions";
+
+interface TermsCheckboxProps {
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+  error?: string;
+  isLoading?: boolean;
+}
+
+function TermsCheckbox({
+  checked,
+  onCheckedChange,
+  error,
+  isLoading = false,
+}: TermsCheckboxProps) {
+  return (
+    <div className="flex items-start space-x-3">
+      <Checkbox
+        id="acceptTerms"
+        checked={checked}
+        onCheckedChange={(checked) => onCheckedChange(checked as boolean)}
+        disabled={isLoading}
+      />
+      <div className="grid gap-1.5 leading-none">
+        <label
+          htmlFor="acceptTerms"
+          className="text-sm leading-snug peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Ich akzeptiere die{" "}
+          <a
+            href="/terms"
+            className="text-primary hover:text-primary/80 link-underline transition-colors"
+          >
+            Nutzungsbedingungen
+          </a>{" "}
+          und{" "}
+          <a
+            href="/privacy"
+            className="text-primary hover:text-primary/80 link-underline transition-colors"
+          >
+            Datenschutzerklärung
+          </a>
+        </label>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+      </div>
+    </div>
+  );
+}
+
+interface MessageDisplayProps {
+  message: { type: "success" | "error"; text: string } | null;
+}
+
+function MessageDisplay({ message }: MessageDisplayProps) {
+  if (!message) return null;
+
+  return (
+    <div
+      className={`p-3 rounded-md text-sm border-l-4 ${
+        message.type === "error" ?
+          "bg-destructive/10 text-destructive border-l-destructive"
+        : "bg-primary/10 text-primary border-l-primary"
+      }`}
+    >
+      {message.text}
+    </div>
+  );
+}
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +93,7 @@ export function RegisterForm() {
     text: string;
   } | null>(null);
 
-  const form = useForm<RegisterInput>({
+  const passwordForm = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
@@ -30,13 +103,26 @@ export function RegisterForm() {
     },
   });
 
+  const magicLinkForm = useForm<RegisterMagicLinkInput>({
+    resolver: zodResolver(registerMagicLinkSchema),
+    defaultValues: {
+      email: "",
+      acceptTerms: false,
+    },
+  });
+
   const password = useWatch({
-    control: form.control,
+    control: passwordForm.control,
     name: "password",
     defaultValue: "",
   });
-  const acceptTerms = useWatch({
-    control: form.control,
+  const passwordAcceptTerms = useWatch({
+    control: passwordForm.control,
+    name: "acceptTerms",
+    defaultValue: false,
+  });
+  const magicLinkAcceptTerms = useWatch({
+    control: magicLinkForm.control,
     name: "acceptTerms",
     defaultValue: false,
   });
@@ -48,7 +134,7 @@ export function RegisterForm() {
     { met: /\d/.test(password), text: "Eine Zahl" },
   ];
 
-  async function onSubmit(data: RegisterInput) {
+  async function onPasswordSubmit(data: RegisterInput) {
     setIsLoading(true);
     setMessage(null);
 
@@ -63,134 +149,173 @@ export function RegisterForm() {
     setIsLoading(false);
   }
 
+  async function onMagicLinkSubmit(data: RegisterMagicLinkInput) {
+    setIsLoading(true);
+    setMessage(null);
+
+    const result = await signInWithMagicLink({ email: data.email });
+
+    if (result.error) {
+      setMessage({ type: "error", text: result.error });
+    } else if (result.success) {
+      setMessage({
+        type: "success",
+        text: "Überprüfen Sie Ihre E-Mail für den Registrierungslink",
+      });
+    }
+
+    setIsLoading(false);
+  }
+
   return (
     <Card>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <CardContent className="space-y-4 pt-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">E-Mail</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="name@beispiel.de"
-              {...form.register("email")}
-              disabled={isLoading}
-            />
-            {form.formState.errors.email && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.email.message}
-              </p>
-            )}
-          </div>
+      <Tabs defaultValue="password" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="password">Mit Passwort</TabsTrigger>
+          <TabsTrigger value="magic-link">Mit Magic Link</TabsTrigger>
+        </TabsList>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Passwort</Label>
-            <Input
-              id="password"
-              type="password"
-              {...form.register("password")}
-              disabled={isLoading}
-            />
-            {form.formState.errors.password && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.password.message}
-              </p>
-            )}
-
-            {password.length > 0 && (
-              <div className="mt-3 p-3 rounded-md bg-muted/50 space-y-2">
-                {passwordRequirements.map((req, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm">
-                    <div
-                      className={`h-2 w-2 rounded-full transition-colors ${
-                        req.met ? "bg-primary" : "bg-muted-foreground/30"
-                      }`}
-                    />
-                    <span
-                      className={`transition-colors ${
-                        req.met ? "text-foreground" : "text-muted-foreground"
-                      }`}
-                    >
-                      {req.text}
-                    </span>
-                  </div>
-                ))}
+        <TabsContent value="password">
+          <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
+            <CardContent className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">E-Mail</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@beispiel.de"
+                  {...passwordForm.register("email")}
+                  disabled={isLoading}
+                />
+                {passwordForm.formState.errors.email && (
+                  <p className="text-sm text-destructive">
+                    {passwordForm.formState.errors.email.message}
+                  </p>
+                )}
               </div>
-            )}
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              {...form.register("confirmPassword")}
-              disabled={isLoading}
-            />
-            {form.formState.errors.confirmPassword && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.confirmPassword.message}
+              <div className="space-y-2">
+                <Label htmlFor="password">Passwort</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  {...passwordForm.register("password")}
+                  disabled={isLoading}
+                />
+                {passwordForm.formState.errors.password && (
+                  <p className="text-sm text-destructive">
+                    {passwordForm.formState.errors.password.message}
+                  </p>
+                )}
+
+                {password.length > 0 && (
+                  <div className="mt-3 p-3 rounded-md bg-muted/50 space-y-2">
+                    {passwordRequirements.map((req, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <div
+                          className={`h-2 w-2 rounded-full transition-colors ${
+                            req.met ? "bg-primary" : "bg-muted-foreground/30"
+                          }`}
+                        />
+                        <span
+                          className={`transition-colors ${
+                            req.met ? "text-foreground" : (
+                              "text-muted-foreground"
+                            )
+                          }`}
+                        >
+                          {req.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  {...passwordForm.register("confirmPassword")}
+                  disabled={isLoading}
+                />
+                {passwordForm.formState.errors.confirmPassword && (
+                  <p className="text-sm text-destructive">
+                    {passwordForm.formState.errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+
+              <TermsCheckbox
+                checked={passwordAcceptTerms}
+                onCheckedChange={(checked) =>
+                  passwordForm.setValue("acceptTerms", checked)
+                }
+                error={passwordForm.formState.errors.acceptTerms?.message}
+                isLoading={isLoading}
+              />
+
+              <MessageDisplay message={message} />
+            </CardContent>
+
+            <CardFooter>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Konto erstellen
+              </Button>
+            </CardFooter>
+          </form>
+        </TabsContent>
+
+        <TabsContent value="magic-link">
+          <form onSubmit={magicLinkForm.handleSubmit(onMagicLinkSubmit)}>
+            <CardContent className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="magic-email">E-Mail</Label>
+                <Input
+                  id="magic-email"
+                  type="email"
+                  placeholder="name@beispiel.de"
+                  {...magicLinkForm.register("email")}
+                  disabled={isLoading}
+                />
+                {magicLinkForm.formState.errors.email && (
+                  <p className="text-sm text-destructive">
+                    {magicLinkForm.formState.errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                Wir senden Ihnen einen Link per E-Mail, mit dem Sie sich
+                registrieren können. Kein Passwort erforderlich.
               </p>
-            )}
-          </div>
 
-          <div className="flex items-start space-x-3">
-            <Checkbox
-              id="acceptTerms"
-              checked={acceptTerms}
-              onCheckedChange={(checked) =>
-                form.setValue("acceptTerms", checked as boolean)
-              }
-              disabled={isLoading}
-            />
-            <div className="grid gap-1.5 leading-none">
-              <label
-                htmlFor="acceptTerms"
-                className="text-sm leading-snug peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Ich akzeptiere die{" "}
-                <a
-                  href="/terms"
-                  className="text-primary hover:text-primary/80 link-underline transition-colors"
-                >
-                  Nutzungsbedingungen
-                </a>{" "}
-                und{" "}
-                <a
-                  href="/privacy"
-                  className="text-primary hover:text-primary/80 link-underline transition-colors"
-                >
-                  Datenschutzerklärung
-                </a>
-              </label>
-              {form.formState.errors.acceptTerms && (
-                <p className="text-sm text-destructive">
-                  {form.formState.errors.acceptTerms.message}
-                </p>
-              )}
-            </div>
-          </div>
+              <TermsCheckbox
+                checked={magicLinkAcceptTerms}
+                onCheckedChange={(checked) =>
+                  magicLinkForm.setValue("acceptTerms", checked)
+                }
+                error={magicLinkForm.formState.errors.acceptTerms?.message}
+                isLoading={isLoading}
+              />
 
-          {message && (
-            <div
-              className={`p-3 rounded-md text-sm border-l-4 ${
-                message.type === "error"
-                  ? "bg-destructive/10 text-destructive border-l-destructive"
-                  : "bg-primary/10 text-primary border-l-primary"
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
-        </CardContent>
+              <MessageDisplay message={message} />
+            </CardContent>
 
-        <CardFooter>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Konto erstellen
-          </Button>
-        </CardFooter>
-      </form>
+            <CardFooter>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Magic Link senden
+              </Button>
+            </CardFooter>
+          </form>
+        </TabsContent>
+      </Tabs>
     </Card>
   );
 }

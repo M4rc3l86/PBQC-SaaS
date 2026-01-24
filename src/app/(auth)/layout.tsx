@@ -20,22 +20,28 @@ export default function AuthLayout({
               <span className="text-white/80">neu definiert</span>
             </h2>
             <p className="text-lg text-white/70 max-w-md leading-relaxed">
-              Professionelle Fotodokumentation und Berichterstattung für die Gebäudereinigung.
-              Einfach, effizient, überzeugend.
+              Professionelle Fotodokumentation und Berichterstattung für die
+              Gebäudereinigung. Einfach, effizient, überzeugend.
             </p>
 
             <div className="flex gap-8 pt-4">
               <div>
                 <div className="text-3xl font-bold">500+</div>
-                <div className="text-sm text-white/60 uppercase tracking-wider">Unternehmen</div>
+                <div className="text-sm text-white/60 uppercase tracking-wider">
+                  Unternehmen
+                </div>
               </div>
               <div>
                 <div className="text-3xl font-bold">50k+</div>
-                <div className="text-sm text-white/60 uppercase tracking-wider">Berichte/Monat</div>
+                <div className="text-sm text-white/60 uppercase tracking-wider">
+                  Berichte/Monat
+                </div>
               </div>
               <div>
                 <div className="text-3xl font-bold">99.9%</div>
-                <div className="text-sm text-white/60 uppercase tracking-wider">Verfügbarkeit</div>
+                <div className="text-sm text-white/60 uppercase tracking-wider">
+                  Verfügbarkeit
+                </div>
               </div>
             </div>
           </div>
@@ -55,9 +61,7 @@ export default function AuthLayout({
 
         {/* Form Container */}
         <div className="flex-1 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-md w-full space-y-6">
-            {children}
-          </div>
+          <div className="max-w-md w-full space-y-6">{children}</div>
         </div>
       </div>
     </div>
