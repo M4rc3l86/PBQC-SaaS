@@ -4,14 +4,17 @@ A mobile-first SaaS platform for quality control inspections with photo document
 
 ## Tech Stack
 
-- **Framework**: Next.js 14+ with App Router
+- **Framework**: Next.js 16+ with App Router
 - **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS + shadcn/ui
+- **Styling**: Tailwind CSS 4 + shadcn/ui (new-york style)
 - **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
+- **Authentication**: Supabase Auth (Email/Password + Magic Link)
 - **Storage**: Supabase Storage
 - **Payments**: Stripe
+- **Email**: Resend
 - **PDF Generation**: pdfkit
+- **Validation**: Zod
+- **Forms**: react-hook-form
 
 ## Prerequisites
 
@@ -19,6 +22,10 @@ A mobile-first SaaS platform for quality control inspections with photo document
 - npm or yarn
 - Supabase account
 - Stripe account (for billing features)
+- Resend account (for email features)
+- Resend account (for email features)
+
+See `PLAN.md` for detailed implementation phase tracking.
 
 ## Getting Started
 
@@ -45,9 +52,24 @@ cp .env.example .env.local
 
 Required environment variables:
 
+### Supabase
 - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` - Supabase anonymous key
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (server-side only)
+
+### App
+- `NEXT_PUBLIC_APP_URL` - Your application URL (e.g., http://localhost:3000)
+
+### Stripe
+- `STRIPE_SECRET_KEY` - Stripe secret key
+- `STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
+- `STRIPE_WEBHOOK_SECRET` - Stripe webhook secret
+- `STRIPE_STARTER_PRICE_ID` - Starter plan price ID
+- `STRIPE_PRO_PRICE_ID` - Pro plan price ID
+
+### Email (Resend)
+- `RESEND_API_KEY` - Resend API key
+- `RESEND_FROM_EMAIL` - Sender email address
 
 ### 4. Set up Supabase
 
@@ -85,24 +107,28 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/            # Authentication pages (login, register)
+│   ├── (auth)/            # Authentication pages (login, register, invite, etc.)
 │   ├── (dashboard)/       # Manager/Owner dashboard
-│   ├── (worker)/          # Worker mobile UI
+│   ├── (worker)/          # Worker mobile-first UI
 │   ├── r/[token]/         # Public report pages
 │   └── api/               # API routes
 ├── components/
 │   ├── ui/                # shadcn/ui components
+│   ├── auth/              # Auth-related components
 │   ├── forms/             # Form components
 │   ├── job/               # Job-related components
 │   ├── camera/            # Camera capture components
-│   └── pdf/               # PDF generation components
+│   └── pdf/               # PDF-related components
 ├── lib/
 │   ├── supabase/          # Supabase client utilities
+│   ├── auth/              # Auth utilities, context, guards
+│   ├── email/             # Email sending (Resend)
 │   ├── stripe/            # Stripe integration
 │   ├── pdf/               # PDF generation utilities
-│   └── validations/       # Zod schemas
+│   └── validations/       # Zod validation schemas
 ├── hooks/                 # Custom React hooks
 └── types/                 # TypeScript types
+    └── database.ts        # Database schema types
 
 supabase/
 └── migrations/            # SQL migration files
@@ -180,10 +206,18 @@ npm run lint     # Run ESLint
 2. Set up webhook endpoint
 3. Configure environment variables:
    - `STRIPE_SECRET_KEY`
-   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+   - `STRIPE_PUBLISHABLE_KEY`
    - `STRIPE_WEBHOOK_SECRET`
    - `STRIPE_STARTER_PRICE_ID`
    - `STRIPE_PRO_PRICE_ID`
+
+### Resend Setup (for emails)
+
+1. Create an account at [resend.com](https://resend.com)
+2. Verify your sender domain
+3. Configure environment variables:
+   - `RESEND_API_KEY`
+   - `RESEND_FROM_EMAIL`
 
 ### Email Setup (optional)
 
@@ -193,6 +227,22 @@ Configure an email provider for notifications:
 - Job assignment notifications
 - Review notifications
 - Trial reminders
+
+## Language & Localization
+
+- **Code & Comments**: English
+- **User-facing Content**: German (UI labels, error messages, emails)
+
+## Coding Conventions
+
+- Use TypeScript strict mode
+- Prefer server components and server actions over client components
+- Use shadcn/ui (new-york style) for all UI components
+- Follow Next.js App Router patterns
+- Always use Zod schemas from `lib/validations/` for validation
+- Use Supabase clients from `lib/supabase/` for database access
+- All data access is protected by Row Level Security (RLS)
+- Worker UI should be mobile-optimized
 
 ## Deployment
 
