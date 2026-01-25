@@ -51,6 +51,7 @@ function TabsList({
       data-slot="tabs-list"
       data-variant={variant}
       className={cn(tabsListVariants({ variant }), className)}
+      suppressHydrationWarning
       {...props}
     />
   )
@@ -83,6 +84,7 @@ function TabsContent({
     <TabsPrimitive.Content
       data-slot="tabs-content"
       className={cn("flex-1 outline-none", className)}
+      suppressHydrationWarning
       {...props}
     />
   )

@@ -8,9 +8,8 @@ export const createSiteSchema = z.object({
   address: z
     .string()
     .max(500, "Die Adresse darf maximal 500 Zeichen lang sein")
-    .optional()
-    .or(z.literal("")),
-  timezone: z.string().default("Europe/Berlin"),
+    .optional(),
+  timezone: z.string().optional(),
 })
 
 export const updateSiteSchema = z.object({
@@ -21,9 +20,8 @@ export const updateSiteSchema = z.object({
   address: z
     .string()
     .max(500, "Die Adresse darf maximal 500 Zeichen lang sein")
-    .optional()
-    .or(z.literal("")),
-  timezone: z.string(),
+    .optional(),
+  timezone: z.string().optional(),
   is_active: z.boolean().optional(),
 })
 

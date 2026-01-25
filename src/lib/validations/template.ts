@@ -38,9 +38,9 @@ export const createChecklistItemSchema = z.object({
   item_type: z.enum(["checkbox", "text", "number", "photo_only"], {
     message: "Bitte wählen Sie einen Elementtyp aus",
   }),
-  requires_photo: z.boolean().default(false),
-  requires_note: z.boolean().default(false),
-  sort_order: z.number().int().min(0).default(0),
+  requires_photo: z.boolean().optional().default(false),
+  requires_note: z.boolean().optional().default(false),
+  sort_order: z.number().int().min(0).optional().default(0),
   parent_id: z.string().uuid().optional().nullable(),
 })
 
