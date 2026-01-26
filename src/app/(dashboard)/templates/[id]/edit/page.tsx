@@ -14,7 +14,9 @@ export default async function EditTemplatePage({
   params: { id: string };
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/login");
@@ -22,7 +24,7 @@ export default async function EditTemplatePage({
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -33,19 +35,30 @@ export default async function EditTemplatePage({
   }
 
   const template = templateResult.data;
-  const items = (template.checklist_items as any) ?? [];
+  const items =
+    (template.checklist_items as Array<{
+      id: string;
+      title: string;
+      description: string | null;
+      item_type: string;
+      requires_photo: boolean;
+      requires_note: boolean;
+      sort_order: number;
+    }>) ?? [];
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/templates">
+        <Link href="/templates">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Vorlage bearbeiten</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Vorlage bearbeiten
+          </h1>
           <p className="text-muted-foreground mt-2">
             Bearbeiten Sie die Vorlage &quot;{template.name}&quot;
           </p>
@@ -61,8 +74,7 @@ export default async function EditTemplatePage({
           }}
           templateId={template.id}
           orgId={orgId}
-          onSuccess={() => redirect("/dashboard/templates")}
-          onCancel={() => redirect("/dashboard/templates")}
+          cancelUrl="/templates"
         />
       </div>
 

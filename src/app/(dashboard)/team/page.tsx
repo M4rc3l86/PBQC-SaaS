@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUserOrganization, getOrgMembers } from "@/lib/organization/actions";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { TeamInviteDialog } from "@/components/team/invite-member-dialog";
 
 // Role labels
@@ -30,7 +29,9 @@ const roleBadgeColors: Record<string, "default" | "secondary"> = {
 
 export default async function TeamPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/login");
@@ -38,7 +39,7 @@ export default async function TeamPage() {
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -62,19 +63,18 @@ export default async function TeamPage() {
       </div>
 
       {/* Members Table */}
-      {members.length === 0 ? (
+      {members.length === 0 ?
         <div className="flex flex-col items-center justify-center py-12 px-4 border rounded-lg border-dashed">
           <Mail className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">Keine Mitglieder</h3>
           <p className="text-sm text-muted-foreground text-center mb-4">
-            {canManage
-              ? "Laden Sie Teammitglieder ein, um gemeinsam zu arbeiten"
-              : "Noch keine anderen Mitglieder in dieser Organisation"}
+            {canManage ?
+              "Laden Sie Teammitglieder ein, um gemeinsam zu arbeiten"
+            : "Noch keine anderen Mitglieder in dieser Organisation"}
           </p>
           {canManage && <TeamInviteDialog orgId={orgId} />}
         </div>
-      ) : (
-        <div className="border rounded-lg">
+      : <div className="border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
@@ -82,11 +82,13 @@ export default async function TeamPage() {
                 <TableHead>Rolle</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Beigetreten</TableHead>
-                {canManage && <TableHead className="text-right">Aktionen</TableHead>}
+                {canManage && (
+                  <TableHead className="text-right">Aktionen</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((member: any) => (
+              {members.map((member) => (
                 <TableRow key={member.id}>
                   <TableCell className="font-medium">{member.email}</TableCell>
                   <TableCell>
@@ -100,19 +102,19 @@ export default async function TeamPage() {
                         member.status === "active" ? "default" : "secondary"
                       }
                     >
-                      {member.status === "active"
-                        ? "Aktiv"
-                        : member.status === "invited"
-                        ? "Eingeladen"
-                        : "Inaktiv"}
+                      {member.status === "active" ?
+                        "Aktiv"
+                      : member.status === "invited" ?
+                        "Eingeladen"
+                      : "Inaktiv"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
-                    {member.joined_at
-                      ? new Date(member.joined_at).toLocaleDateString("de-DE")
-                      : member.invited_at
-                      ? new Date(member.invited_at).toLocaleDateString("de-DE")
-                      : "-"}
+                    {member.joined_at ?
+                      new Date(member.joined_at).toLocaleDateString("de-DE")
+                    : member.invited_at ?
+                      new Date(member.invited_at).toLocaleDateString("de-DE")
+                    : "-"}
                   </TableCell>
                   {canManage && (
                     <TableCell className="text-right">
@@ -127,7 +129,7 @@ export default async function TeamPage() {
             </TableBody>
           </Table>
         </div>
-      )}
+      }
     </div>
   );
 }

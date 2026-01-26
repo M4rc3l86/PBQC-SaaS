@@ -34,7 +34,7 @@ export function InviteAcceptForm({
     }
 
     // Redirect to dashboard
-    router.push("/dashboard");
+    router.push("/");
   }
 
   return (

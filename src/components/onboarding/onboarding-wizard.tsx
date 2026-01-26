@@ -34,7 +34,7 @@ export function OnboardingWizard() {
   };
 
   const handleStep4Complete = () => {
-    router.push("/dashboard");
+    router.push("/");
   };
 
   const handleBack = () => {
@@ -42,7 +42,7 @@ export function OnboardingWizard() {
   };
 
   const handleSkip = () => {
-    router.push("/dashboard");
+    router.push("/");
   };
 
   return (

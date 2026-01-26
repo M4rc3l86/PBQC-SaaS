@@ -22,13 +22,6 @@ import {
 } from "@/components/ui/select";
 import { updateMemberRole } from "@/lib/organization/actions";
 
-// Role labels
-const roleLabels: Record<string, string> = {
-  owner: "Inhaber",
-  manager: "Manager",
-  worker: "Mitarbeiter",
-};
-
 interface ChangeRoleDialogProps {
   memberId: string;
   currentRole: string;
@@ -57,7 +50,7 @@ export function ChangeRoleDialog({
     setIsLoading(true);
     setMessage(null);
 
-    const result = await updateMemberRole(memberId, { role: selectedRole as any });
+    const result = await updateMemberRole(memberId, { role: selectedRole as "owner" | "manager" | "worker" });
 
     if (result?.error) {
       setMessage({ type: "error", text: result.error });

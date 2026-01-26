@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Copy, FileText, CheckCircle } from "lucide-react";
+import { Plus, Pencil, FileText, CheckCircle } from "lucide-react";
 
 export default async function TemplatesPage() {
   const supabase = await createClient();
@@ -24,7 +24,7 @@ export default async function TemplatesPage() {
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -45,7 +45,7 @@ export default async function TemplatesPage() {
 
   const templatesWithCounts = templates?.map((t) => ({
     ...t,
-    item_count: (t.checklist_items as any)?.length || 0,
+    item_count: (t.checklist_items as unknown[])?.length || 0,
   })) ?? [];
 
   return (
@@ -58,7 +58,7 @@ export default async function TemplatesPage() {
             Verwalten Sie Ihre Checklisten-Vorlagen für Aufträge
           </p>
         </div>
-        <Link href="/dashboard/templates/new">
+        <Link href="/templates/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Neue Vorlage
@@ -74,7 +74,7 @@ export default async function TemplatesPage() {
           <p className="text-sm text-muted-foreground text-center mb-4">
             Erstellen Sie Ihre erste Vorlage, um Checklisten für Aufträge zu definieren
           </p>
-          <Link href="/dashboard/templates/new">
+          <Link href="/templates/new">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               Erste Vorlage
@@ -117,7 +117,7 @@ export default async function TemplatesPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
-                      <Link href={`/dashboard/templates/${template.id}/edit`}>
+                      <Link href={`/templates/${template.id}/edit`}>
                         <Button variant="ghost" size="sm">
                           <Pencil className="h-4 w-4" />
                         </Button>

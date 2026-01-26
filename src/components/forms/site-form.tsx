@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -36,17 +37,16 @@ interface SiteFormProps {
   initialData?: Partial<CreateSiteInput> & { id?: string };
   siteId?: string;
   orgId: string;
-  onSuccess?: () => void;
-  onCancel?: () => void;
+  cancelUrl?: string;
 }
 
 export function SiteForm({
   initialData,
   siteId,
   orgId,
-  onSuccess,
-  onCancel,
+  cancelUrl,
 }: SiteFormProps) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -74,9 +74,12 @@ export function SiteForm({
 
     if (result?.error) {
       setMessage({ type: "error", text: result.error });
-    } else {
-      setMessage({ type: "success", text: isEditing ? "Standort aktualisiert" : "Standort erstellt" });
-      if (onSuccess) onSuccess();
+    } else if (result?.data) {
+      if (isEditing) {
+        setMessage({ type: "success", text: "Standort aktualisiert" });
+      } else {
+        router.push(`/sites/${result.data.id}/edit`);
+      }
     }
 
     setIsLoading(false);
@@ -153,11 +156,11 @@ export function SiteForm({
       </div>
 
       <div className="flex gap-2 justify-end">
-        {onCancel && (
+        {cancelUrl && (
           <Button
             type="button"
             variant="outline"
-            onClick={onCancel}
+            onClick={() => router.push(cancelUrl)}
             disabled={isLoading}
           >
             Abbrechen

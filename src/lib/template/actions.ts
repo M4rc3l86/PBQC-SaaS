@@ -287,11 +287,19 @@ export async function duplicateTemplate(templateId: string) {
 
   // Copy all items
   if (template.checklist_items && template.checklist_items.length > 0) {
-    const itemsToInsert = template.checklist_items.map((item: any) => ({
+    const itemsToInsert = template.checklist_items.map((item: {
+      title: string;
+      description: string | null;
+      item_type: string;
+      requires_photo: boolean;
+      requires_note: boolean;
+      sort_order: number;
+      parent_id: string | null;
+    }) => ({
       template_id: newTemplate.id,
       title: item.title,
       description: item.description,
-      item_type: item.item_type,
+      item_type: item.item_type as "checkbox" | "text" | "number" | "photo_only",
       requires_photo: item.requires_photo,
       requires_note: item.requires_note,
       sort_order: item.sort_order,
@@ -305,6 +313,6 @@ export async function duplicateTemplate(templateId: string) {
     if (itemsError) return { error: itemsError.message };
   }
 
-  revalidatePath("/dashboard/templates");
+  revalidatePath("/templates");
   return { success: true, data: newTemplate };
 }

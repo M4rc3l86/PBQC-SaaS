@@ -29,7 +29,7 @@ export function Sidebar({ className }: SidebarProps) {
     >
       {/* Logo Section */}
       <div className="flex h-16 items-center border-b px-6">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <Logo size="sm" />
         </Link>
       </div>

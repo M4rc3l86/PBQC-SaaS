@@ -17,7 +17,7 @@ export default async function SettingsPage() {
   const orgResult = await getUserOrganization();
 
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const org = orgResult.data.organizations;

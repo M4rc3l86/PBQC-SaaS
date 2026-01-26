@@ -76,14 +76,48 @@ export async function getDashboardStats(orgId: string): Promise<{
       .order("created_at", { ascending: false })
       .limit(5);
 
-    const recentJobs = (recentJobsData ?? []).map((job: any) => ({
-      id: job.id,
-      site_name: job.sites?.name || "Unbekannt",
-      template_name: job.templates?.name || "Unbekannt",
-      worker_email: job.org_members?.email || "Nicht zugewiesen",
-      status: job.status,
-      scheduled_date: job.scheduled_date,
-    }));
+    // Helper function to safely extract name/email from Supabase relations
+    const getRelationName = (relation: unknown): string | null => {
+      if (!relation) return null;
+      // Supabase returns either an object or an array of objects
+      if (Array.isArray(relation)) {
+        return relation.length > 0 && typeof relation[0] === "object" && relation[0] !== null && "name" in relation[0]
+          ? String(relation[0].name)
+          : null;
+      }
+      if (typeof relation === "object" && relation !== null && "name" in relation) {
+        return String(relation.name);
+      }
+      return null;
+    };
+
+    const getRelationEmail = (relation: unknown): string | null => {
+      if (!relation) return null;
+      if (Array.isArray(relation)) {
+        return relation.length > 0 && typeof relation[0] === "object" && relation[0] !== null && "email" in relation[0]
+          ? String(relation[0].email)
+          : null;
+      }
+      if (typeof relation === "object" && relation !== null && "email" in relation) {
+        return String(relation.email);
+      }
+      return null;
+    };
+
+    const recentJobs = (recentJobsData ?? []).map((job) => {
+      const siteName = getRelationName((job as { sites?: unknown }).sites);
+      const templateName = getRelationName((job as { templates?: unknown }).templates);
+      const workerEmail = getRelationEmail((job as { org_members?: unknown }).org_members);
+
+      return {
+        id: job.id,
+        site_name: siteName ?? "Unbekannt",
+        template_name: templateName ?? "Unbekannt",
+        worker_email: workerEmail ?? "Nicht zugewiesen",
+        status: job.status,
+        scheduled_date: job.scheduled_date,
+      };
+    });
 
     return {
       success: true,
