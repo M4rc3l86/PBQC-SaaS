@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Mail } from "lucide-react";
 import { TeamInviteDialog } from "@/components/team/invite-member-dialog";
+import { TeamActions } from "@/components/team/team-actions";
 
 // Role labels
 const roleLabels: Record<string, string> = {
@@ -118,10 +119,13 @@ export default async function TeamPage() {
                   </TableCell>
                   {canManage && (
                     <TableCell className="text-right">
-                      {/* TODO: Add actions in separate dialog components */}
-                      <span className="text-muted-foreground text-sm">
-                        Aktionen folgen
-                      </span>
+                      <TeamActions
+                        memberId={member.id}
+                        memberEmail={member.email}
+                        currentRole={member.role}
+                        canChangeRole={userRole === "owner"}
+                        canRemove={userRole === "owner"}
+                      />
                     </TableCell>
                   )}
                 </TableRow>

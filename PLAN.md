@@ -310,8 +310,8 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 
 #### 2.1 Dashboard Layout
 
-- [ ] Create `app/(dashboard)/layout.tsx`
-- [ ] Build responsive sidebar navigation with:
+- [x] Create `app/(dashboard)/layout.tsx`
+- [x] Build responsive sidebar navigation with:
   - Dashboard link
   - Sites link
   - Templates link
@@ -321,71 +321,71 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
   - Team link
   - Settings link
   - Billing link (owner only)
-- [ ] Create top header bar with:
+- [x] Create top header bar with:
   - Org name/selector (future)
   - User menu dropdown
   - Logout option
-- [ ] Implement mobile-responsive navigation (hamburger menu)
-- [ ] Add breadcrumb component
+- [x] Implement mobile-responsive navigation (hamburger menu)
+- [x] Add breadcrumb component
 
 #### 2.2 Organization Management
 
-- [ ] Create onboarding flow for new users:
+- [x] Create onboarding flow for new users:
   - Step 1: Create organization (name)
   - Step 2: Create first site
   - Step 3: Create first template (or use demo)
   - Step 4: Invite first worker (optional)
-- [ ] Create `app/(dashboard)/settings/page.tsx`
-- [ ] Build organization settings form:
+- [x] Create `app/(dashboard)/settings/page.tsx`
+- [x] Build organization settings form:
   - Organization name (editable)
   - Owner information (read-only)
   - Created date
-- [ ] Implement organization update API
-- [ ] Add organization delete with confirmation (soft delete)
+- [x] Implement organization update API
+- [x] Add organization delete with confirmation (soft delete)
 
 #### 2.3 Sites CRUD
 
-- [ ] Create `app/(dashboard)/sites/page.tsx` - list view
-- [ ] Build sites list component with:
+- [x] Create `app/(dashboard)/sites/page.tsx` - list view
+- [x] Build sites list component with:
   - Site name
   - Address
   - Active/Inactive status
   - Job count
   - Actions (edit, deactivate)
-- [ ] Create `app/(dashboard)/sites/new/page.tsx`
-- [ ] Build site creation form:
+- [x] Create `app/(dashboard)/sites/new/page.tsx`
+- [x] Build site creation form:
   - Name (required)
   - Address (optional, textarea)
   - Timezone (dropdown, default Europe/Berlin)
-- [ ] Create `app/(dashboard)/sites/[id]/edit/page.tsx`
-- [ ] Build site edit form (same fields)
-- [ ] Implement API routes:
+- [x] Create `app/(dashboard)/sites/[id]/edit/page.tsx`
+- [x] Build site edit form (same fields)
+- [x] Implement API routes:
   - `GET /api/sites` - list sites for org
   - `POST /api/sites` - create site
   - `GET /api/sites/[id]` - get single site
   - `PUT /api/sites/[id]` - update site
   - `DELETE /api/sites/[id]` - soft delete (set inactive)
-- [ ] Add confirmation dialog for deactivation
-- [ ] Show toast notifications for success/error
+- [x] Add confirmation dialog for deactivation
+- [x] Show toast notifications for success/error
 
 #### 2.4 Checklist Templates CRUD
 
-- [ ] Create `app/(dashboard)/templates/page.tsx` - list view
-- [ ] Build templates list component with:
+- [x] Create `app/(dashboard)/templates/page.tsx` - list view
+- [x] Build templates list component with:
   - Template name
   - Item count
   - Active/Inactive status
   - Last modified date
   - Actions (edit, duplicate, deactivate)
-- [ ] Create `app/(dashboard)/templates/new/page.tsx`
-- [ ] Build template creation form:
+- [x] Create `app/(dashboard)/templates/new/page.tsx`
+- [x] Build template creation form:
   - Template name (required)
   - Description (optional)
-- [ ] Create `app/(dashboard)/templates/[id]/edit/page.tsx`
+- [x] Create `app/(dashboard)/templates/[id]/edit/page.tsx`
 
 #### 2.5 Checklist Items Management
 
-- [ ] Build checklist items editor component with:
+- [x] Build checklist items editor component with:
   - Drag-and-drop reordering
   - Add new item button
   - Item fields:
@@ -395,9 +395,9 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
     - Requires photo toggle
     - Requires note toggle
   - Delete item button with confirmation
-- [ ] Implement sort_order update on drag-drop
-- [ ] Create nested items UI (parent_id) - basic structure for post-MVP
-- [ ] Implement API routes:
+- [x] Implement sort_order update on drag-drop
+- [x] Create nested items UI (parent_id) - basic structure for post-MVP
+- [x] Implement API routes:
   - `GET /api/templates` - list templates for org
   - `POST /api/templates` - create template
   - `GET /api/templates/[id]` - get template with items
@@ -407,26 +407,26 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
   - `PUT /api/templates/[id]/items/[itemId]` - update item
   - `DELETE /api/templates/[id]/items/[itemId]` - delete item
   - `PUT /api/templates/[id]/items/reorder` - bulk update sort_order
-- [ ] Add template duplication functionality
+- [x] Add template duplication functionality
 
 #### 2.6 Team Management
 
-- [ ] Create `app/(dashboard)/team/page.tsx`
-- [ ] Build team members list with:
+- [x] Create `app/(dashboard)/team/page.tsx`
+- [x] Build team members list with:
   - Name/Email
   - Role badge (Owner, Manager, Worker)
   - Status (Active, Invited)
   - Joined date
   - Actions (change role, remove)
-- [ ] Create invite member dialog/modal:
+- [x] Create invite member dialog/modal:
   - Email input
   - Role selector (Manager, Worker)
   - Send invite button
-- [ ] Implement role change functionality (owner/manager only)
-- [ ] Implement member removal with confirmation
-- [ ] Show pending invitations separately
-- [ ] Add resend invitation option
-- [ ] Implement API routes:
+- [x] Implement role change functionality (owner/manager only)
+- [x] Implement member removal with confirmation
+- [x] Show pending invitations separately
+- [x] Add resend invitation option
+- [x] Implement API routes:
   - `GET /api/team` - list org members
   - `POST /api/team/invite` - send invitation
   - `PUT /api/team/[id]/role` - change role
@@ -435,8 +435,8 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
 
 #### 2.7 Dashboard Home
 
-- [ ] Create `app/(dashboard)/page.tsx`
-- [ ] Build dashboard overview with:
+- [x] Create `app/(dashboard)/page.tsx`
+- [x] Build dashboard overview with:
   - Quick stats cards:
     - Total jobs this month
     - Pending review count
@@ -446,18 +446,20 @@ Implement CRUD operations for Organizations, Sites, and Checklist Templates with
   - Quick actions:
     - Create new job
     - View pending reviews
-- [ ] Add subscription status banner (trial days remaining, etc.)
+- [x] Add subscription status banner (trial days remaining, etc.)
 
 ### Definition of Done
 
-- [ ] Dashboard layout renders correctly on desktop and mobile
-- [ ] Organization settings can be viewed and edited
-- [ ] Sites can be created, listed, edited, and deactivated
-- [ ] Templates can be created, listed, edited, and duplicated
-- [ ] Checklist items can be added, edited, reordered, and deleted
-- [ ] Team members can be invited and managed
-- [ ] Dashboard shows accurate statistics
-- [ ] All API routes return proper responses with error handling
+- [x] Dashboard layout renders correctly on desktop and mobile
+- [x] Organization settings can be viewed and edited
+- [x] Sites can be created, listed, edited, and deactivated
+- [x] Templates can be created, listed, edited, and duplicated
+- [x] Checklist items can be added, edited, reordered, and deleted
+- [x] Team members can be invited and managed
+- [x] Dashboard shows accurate statistics
+- [x] All API routes return proper responses with error handling
+
+**Phase 2 Status: COMPLETED** ✅
 
 ---
 
