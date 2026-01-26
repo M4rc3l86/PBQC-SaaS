@@ -25,7 +25,7 @@ export default async function SitesPage() {
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -43,7 +43,7 @@ export default async function SitesPage() {
             Verwalten Sie Ihre Standorte, an denen Aufträge ausgeführt werden
           </p>
         </div>
-        <Link href="/dashboard/sites/new">
+        <Link href="/sites/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Neuer Standort
@@ -59,7 +59,7 @@ export default async function SitesPage() {
           <p className="text-sm text-muted-foreground text-center mb-4">
             Erstellen Sie Ihren ersten Standort, um mit der Arbeit zu beginnen
           </p>
-          <Link href="/dashboard/sites/new">
+          <Link href="/sites/new">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               Erster Standort
@@ -97,7 +97,7 @@ export default async function SitesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Link href={`/dashboard/sites/${site.id}/edit`}>
+                    <Link href={`/sites/${site.id}/edit`}>
                       <Button variant="ghost" size="sm">
                         <Pencil className="h-4 w-4" />
                       </Button>

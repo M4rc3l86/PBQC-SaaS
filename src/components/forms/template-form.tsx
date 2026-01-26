@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -15,17 +16,16 @@ interface TemplateFormProps {
   initialData?: Partial<CreateTemplateInput> & { id?: string };
   templateId?: string;
   orgId: string;
-  onSuccess?: (templateId: string) => void;
-  onCancel?: () => void;
+  cancelUrl?: string;
 }
 
 export function TemplateForm({
   initialData,
   templateId,
   orgId,
-  onSuccess,
-  onCancel,
+  cancelUrl,
 }: TemplateFormProps) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -59,11 +59,14 @@ export function TemplateForm({
     if (result?.error) {
       setMessage({ type: "error", text: result.error });
     } else if (result?.data) {
-      setMessage({
-        type: "success",
-        text: isEditing ? "Vorlage aktualisiert" : "Vorlage erstellt",
-      });
-      if (onSuccess) onSuccess(result.data.id);
+      if (isEditing) {
+        setMessage({
+          type: "success",
+          text: "Vorlage aktualisiert",
+        });
+      } else {
+        router.push(`/templates/${result.data.id}/edit`);
+      }
     }
 
     setIsLoading(false);
@@ -115,11 +118,11 @@ export function TemplateForm({
       </div>
 
       <div className="flex gap-2 justify-end">
-        {onCancel && (
+        {cancelUrl && (
           <Button
             type="button"
             variant="outline"
-            onClick={onCancel}
+            onClick={() => router.push(cancelUrl)}
             disabled={isLoading}
           >
             Abbrechen

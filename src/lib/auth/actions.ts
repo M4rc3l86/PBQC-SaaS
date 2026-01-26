@@ -36,7 +36,7 @@ export async function signIn(data: LoginInput) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function signInWithMagicLink(data: MagicLinkInput) {
@@ -89,7 +89,7 @@ export async function updatePassword(data: UpdatePasswordInput) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function getSession() {

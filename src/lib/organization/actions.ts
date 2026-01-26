@@ -281,7 +281,7 @@ export async function updateMemberRole(
     return { error: error.message };
   }
 
-  revalidatePath("/dashboard/team");
+  revalidatePath("/team");
   return { success: true };
 }
 
@@ -351,6 +351,6 @@ export async function removeMember(memberId: string) {
     return { error: error.message };
   }
 
-  revalidatePath("/dashboard/team");
+  revalidatePath("/team");
   return { success: true };
 }

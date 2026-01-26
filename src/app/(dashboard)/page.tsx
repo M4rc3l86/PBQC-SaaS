@@ -38,7 +38,7 @@ export default async function DashboardPage() {
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -60,21 +60,21 @@ export default async function DashboardPage() {
       title: "Neuer Auftrag",
       description: "Erstellen Sie einen neuen Auftrag für ein Standort",
       icon: Briefcase,
-      href: "/dashboard/jobs/new",
+      href: "/jobs/new",
       variant: "default" as const,
     },
     {
       title: "Standorte verwalten",
       description: "Fügen Sie Standorte hinzu oder bearbeiten Sie sie",
       icon: Building,
-      href: "/dashboard/sites",
+      href: "/sites",
       variant: "outline" as const,
     },
     {
       title: "Vorlagen erstellen",
       description: "Erstellen Sie Checklisten-Vorlagen",
       icon: FileText,
-      href: "/dashboard/templates",
+      href: "/templates",
       variant: "outline" as const,
     },
     {
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
         stats.pendingReviews !== 1 ? "e" : ""
       } warten auf Ihre Prüfung`,
       icon: CheckCircle,
-      href: "/dashboard/review",
+      href: "/review",
       variant: stats.pendingReviews > 0 ? ("default" as const) : ("secondary" as const),
     },
   ];

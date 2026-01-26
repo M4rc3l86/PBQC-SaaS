@@ -19,13 +19,11 @@ import { removeMember } from "@/lib/organization/actions";
 interface RemoveMemberDialogProps {
   memberId: string;
   memberEmail: string;
-  memberRole: string;
 }
 
 export function RemoveMemberDialog({
   memberId,
   memberEmail,
-  memberRole,
 }: RemoveMemberDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
 

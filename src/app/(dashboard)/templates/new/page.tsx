@@ -16,7 +16,7 @@ export default async function NewTemplatePage() {
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -25,7 +25,7 @@ export default async function NewTemplatePage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/templates">
+        <Link href="/templates">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -40,11 +40,7 @@ export default async function NewTemplatePage() {
 
       {/* Form */}
       <div className="border rounded-lg p-6 max-w-2xl">
-        <TemplateForm
-          orgId={orgId}
-          onSuccess={(templateId) => redirect(`/dashboard/templates/${templateId}/edit`)}
-          onCancel={() => redirect("/dashboard/templates")}
-        />
+        <TemplateForm orgId={orgId} cancelUrl="/templates" />
       </div>
     </div>
   );

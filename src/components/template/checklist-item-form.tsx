@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +18,6 @@ import {
 } from "@/components/ui/select";
 import {
   createChecklistItemSchema,
-  updateChecklistItemSchema,
   type CreateChecklistItemInput,
   type UpdateChecklistItemInput,
 } from "@/lib/validations/template";
@@ -38,7 +36,7 @@ const ITEM_TYPES = [
 
 interface ChecklistItemFormProps {
   templateId: string;
-  initialData?: Partial<UpdateChecklistItemInput> & { id?: string };
+  initialData?: Partial<CreateChecklistItemInput> & { id?: string };
   itemId?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
@@ -59,7 +57,7 @@ export function ChecklistItemForm({
 
   const isEditing = !!itemId;
 
-  const form = useForm<any>({
+  const form = useForm({
     resolver: zodResolver(createChecklistItemSchema),
     defaultValues: {
       title: initialData?.title || "",
@@ -72,7 +70,16 @@ export function ChecklistItemForm({
     },
   });
 
-  async function onSubmit(data: any) {
+  const requiresPhoto = useWatch({
+    control: form.control,
+    name: "requires_photo",
+  });
+  const requiresNote = useWatch({
+    control: form.control,
+    name: "requires_note",
+  });
+
+  async function onSubmit(data: CreateChecklistItemInput) {
     setIsLoading(true);
     setMessage(null);
 
@@ -99,8 +106,6 @@ export function ChecklistItemForm({
 
     setIsLoading(false);
   }
-
-  const itemType = form.watch("item_type");
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -152,7 +157,7 @@ export function ChecklistItemForm({
         <Select
           value={form.getValues("item_type")}
           onValueChange={(value) =>
-            form.setValue("item_type", value as any)
+            form.setValue("item_type", value as "checkbox" | "text" | "number" | "photo_only")
           }
           disabled={isLoading}
         >
@@ -178,7 +183,7 @@ export function ChecklistItemForm({
         <div className="flex items-center space-x-2">
           <Checkbox
             id="requires_photo"
-            checked={form.watch("requires_photo")}
+            checked={requiresPhoto}
             onCheckedChange={(checked) =>
               form.setValue("requires_photo", checked as boolean)
             }
@@ -192,7 +197,7 @@ export function ChecklistItemForm({
         <div className="flex items-center space-x-2">
           <Checkbox
             id="requires_note"
-            checked={form.watch("requires_note")}
+            checked={requiresNote}
             onCheckedChange={(checked) =>
               form.setValue("requires_note", checked as boolean)
             }

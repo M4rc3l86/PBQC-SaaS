@@ -32,7 +32,7 @@ export default function UnauthorizedPage() {
         </CardContent>
         <CardFooter className="flex justify-center gap-4">
           <Button variant="outline" asChild>
-            <Link href="/dashboard">Zum Dashboard</Link>
+            <Link href="/">Zum Dashboard</Link>
           </Button>
         </CardFooter>
       </Card>

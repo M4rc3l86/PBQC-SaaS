@@ -13,7 +13,9 @@ export default async function EditSitePage({
   params: { id: string };
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/login");
@@ -21,7 +23,7 @@ export default async function EditSitePage({
 
   const orgResult = await getUserOrganization();
   if (!orgResult.success || !orgResult.data) {
-    redirect("/dashboard/onboarding");
+    redirect("/onboarding");
   }
 
   const orgId = orgResult.data.organizations.id;
@@ -37,13 +39,15 @@ export default async function EditSitePage({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/sites">
+        <Link href="/sites">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Standort bearbeiten</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Standort bearbeiten
+          </h1>
           <p className="text-muted-foreground mt-2">
             Bearbeiten Sie die Details des Standorts &quot;{site.name}&quot;
           </p>
@@ -60,8 +64,7 @@ export default async function EditSitePage({
           }}
           siteId={site.id}
           orgId={orgId}
-          onSuccess={() => redirect("/dashboard/sites")}
-          onCancel={() => redirect("/dashboard/sites")}
+          cancelUrl="/sites"
         />
       </div>
     </div>

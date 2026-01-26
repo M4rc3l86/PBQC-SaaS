@@ -24,7 +24,6 @@ import {
 import { Plus, Pencil, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { ChecklistItemForm } from "./checklist-item-form";
 import {
-  updateChecklistItem,
   deleteChecklistItem,
   reorderChecklistItems,
 } from "@/lib/template/actions";
@@ -270,7 +269,7 @@ export function TemplateItemEditor({
               itemId={editingItem.id}
               initialData={{
                 ...editingItem,
-                item_type: editingItem.item_type as any,
+                item_type: editingItem.item_type as "checkbox" | "text" | "number" | "photo_only",
                 description: editingItem.description ?? undefined,
               }}
               onSuccess={handleEditSuccess}
