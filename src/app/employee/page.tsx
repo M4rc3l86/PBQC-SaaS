@@ -50,10 +50,10 @@ export default async function EmployeeDashboard() {
       <main className="p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-950 dark:text-zinc-50">
-            Welcome, {profile.full_name || 'Employee'}!
+            Willkommen, {profile.full_name || 'Mitarbeiter'}!
           </h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-            {profile.company?.name || 'Your company'} employee portal
+            Mitarbeiter-Portal {profile.company?.name || 'Ihr Unternehmens'}
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default async function EmployeeDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Assigned Jobs
+                  Zugewiesene Aufträge
                 </p>
                 <p className="mt-2 text-3xl font-bold text-zinc-950 dark:text-zinc-50">
                   0
@@ -91,7 +91,7 @@ export default async function EmployeeDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Pending Reviews
+                  Ausstehende Überprüfungen
                 </p>
                 <p className="mt-2 text-3xl font-bold text-zinc-950 dark:text-zinc-50">
                   0
@@ -119,7 +119,7 @@ export default async function EmployeeDashboard() {
         {/* Quick actions placeholder */}
         <div className="mt-8">
           <h2 className="mb-4 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
-            My Jobs
+            Meine Aufträge
           </h2>
           <div className="rounded-lg border bg-white p-12 text-center shadow-sm dark:bg-zinc-900">
             <svg
@@ -136,10 +136,10 @@ export default async function EmployeeDashboard() {
               />
             </svg>
             <h3 className="mt-4 text-lg font-medium text-zinc-950 dark:text-zinc-50">
-              No jobs assigned yet
+              Noch keine Aufträge zugewiesen
             </h3>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              When your administrator assigns you jobs, they will appear here.
+              Wenn Ihr Administrator Ihnen Aufträge zuweist, werden sie hier angezeigt.
             </p>
           </div>
         </div>

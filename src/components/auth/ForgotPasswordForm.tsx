@@ -63,7 +63,7 @@ export function ForgotPasswordForm() {
 
   const onSubmit = async (values: ForgotPasswordFormValues) => {
     if (isForgotPasswordRateLimited()) {
-      toast.error('Too many password reset requests. Please try again later.')
+      toast.error('Zu viele Anfragen zum Zurücksetzen des Passworts. Bitte versuchen Sie es später erneut.')
       return
     }
 
@@ -77,14 +77,14 @@ export function ForgotPasswordForm() {
       incrementForgotPasswordAttempts()
 
       if (error) {
-        toast.error(error.message || 'Failed to send reset email')
+        toast.error(error.message || 'Rücksetz-E-Mail konnte nicht gesendet werden')
         return
       }
 
       setIsSuccess(true)
-      toast.success('If an account exists with this email, a password reset link has been sent.')
+      toast.success('Wenn ein Konto mit dieser E-Mail existiert, wurde ein Rücksetzlink gesendet.')
     } catch {
-      toast.error('An unexpected error occurred')
+      toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {
       setIsLoading(false)
     }
@@ -110,10 +110,10 @@ export function ForgotPasswordForm() {
         </div>
         <div className="space-y-2">
           <h3 className="font-semibold text-zinc-950 dark:text-zinc-50">
-            Check your email
+            E-Mail prüfen
           </h3>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            We&apos;ve sent a password reset link to your email address.
+            Wir haben einen Rücksetzlink an Ihre E-Mail-Adresse gesendet.
           </p>
         </div>
         <Button
@@ -122,7 +122,7 @@ export function ForgotPasswordForm() {
           className="w-full"
           onClick={() => setIsSuccess(false)}
         >
-          Send another email
+          Weitere E-Mail senden
         </Button>
       </div>
     )
@@ -132,11 +132,11 @@ export function ForgotPasswordForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">E-Mail</Label>
           <Input
             id="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder="name@firma.de"
             disabled={isLoading}
             {...form.register('email')}
           />
@@ -149,7 +149,7 @@ export function ForgotPasswordForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Sending...' : 'Send reset link'}
+        {isLoading ? 'Wird gesendet...' : 'Rücksetzlink senden'}
       </Button>
     </form>
   )

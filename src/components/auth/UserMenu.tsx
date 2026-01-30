@@ -36,7 +36,7 @@ export function UserMenu() {
 
         setUser(profile)
       } catch {
-        toast.error('Failed to load user profile')
+        toast.error('Benutzerprofil konnte nicht geladen werden')
       } finally {
         setIsLoading(false)
       }
@@ -50,7 +50,7 @@ export function UserMenu() {
       await supabase.auth.signOut()
       router.push('/login')
     } catch {
-      toast.error('Failed to log out')
+      toast.error('Abmeldung fehlgeschlagen')
     }
   }
 
@@ -69,7 +69,7 @@ export function UserMenu() {
           {user?.full_name || 'User'}
         </p>
         <p className="text-xs text-zinc-600 dark:text-zinc-400">
-          {user?.role === 'admin' ? 'Administrator' : 'Employee'}
+          {user?.role === 'admin' ? 'Administrator' : 'Mitarbeiter'}
         </p>
       </div>
 
@@ -78,7 +78,7 @@ export function UserMenu() {
         size="sm"
         onClick={handleLogout}
       >
-        Log out
+        Abmelden
       </Button>
     </div>
   )

@@ -62,7 +62,7 @@ export function LoginForm() {
   const onSubmit = async (values: LoginFormValues) => {
     // Check rate limit
     if (isRateLimited()) {
-      toast.error('Too many login attempts. Please try again later.')
+      toast.error('Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.')
       return
     }
 
@@ -76,7 +76,7 @@ export function LoginForm() {
 
       if (error) {
         incrementLoginAttempts()
-        toast.error(error.message || 'Failed to sign in')
+        toast.error(error.message || 'Anmeldung fehlgeschlagen')
         return
       }
 
@@ -88,13 +88,13 @@ export function LoginForm() {
         .single()
 
       if (profileError || !profile) {
-        toast.error('Failed to load user profile')
+        toast.error('Benutzerprofil konnte nicht geladen werden')
         await supabase.auth.signOut()
         return
       }
 
       if (profile.status === 'deactivated') {
-        toast.error('Your account has been deactivated. Please contact support.')
+        toast.error('Ihr Konto wurde deaktiviert. Bitte kontaktieren Sie den Support.')
         await supabase.auth.signOut()
         return
       }
@@ -108,11 +108,11 @@ export function LoginForm() {
       } else if (profile.role === 'employee') {
         router.push('/employee')
       } else {
-        toast.error('Invalid user role')
+        toast.error('Ungültige Benutzerrolle')
         await supabase.auth.signOut()
       }
     } catch {
-      toast.error('An unexpected error occurred')
+      toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {
       setIsLoading(false)
     }
@@ -122,11 +122,11 @@ export function LoginForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">E-Mail</Label>
           <Input
             id="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder="name@firma.de"
             disabled={isLoading}
             {...form.register('email')}
           />
@@ -139,12 +139,12 @@ export function LoginForm() {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Passwort</Label>
             <Link
               href="/forgot-password"
               className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
             >
-              Forgot password?
+              Passwort vergessen?
             </Link>
           </div>
           <Input
@@ -162,7 +162,7 @@ export function LoginForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Signing in...' : 'Sign in'}
+        {isLoading ? 'Wird angemeldet...' : 'Anmelden'}
       </Button>
     </form>
   )

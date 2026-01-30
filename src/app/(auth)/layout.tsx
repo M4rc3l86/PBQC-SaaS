@@ -18,16 +18,16 @@ export default function AuthLayout({
 
         <div className="space-y-6">
           <h1 className="text-4xl font-bold tracking-tight">
-            Quality Control Made Simple
+            Qualitätskontrolle einfach gemacht
           </h1>
           <p className="text-lg text-zinc-400">
-            Streamline your inspection workflows, manage checklists, and maintain
-            high standards with our comprehensive quality control platform.
+            Optimieren Sie Ihre Inspektionsabläufe, verwalten Sie Checklisten und
+            halten Sie hohe Standards mit unserer umfassenden Qualitätskontrollplattform.
           </p>
         </div>
 
         <div className="text-sm text-zinc-500">
-          © {new Date().getFullYear()} PBQC. All rights reserved.
+          © {new Date().getFullYear()} PBQC. Alle Rechte vorbehalten.
         </div>
       </div>
 
@@ -45,7 +45,7 @@ export default function AuthLayout({
 
         {/* Mobile footer */}
         <div className="mt-8 text-center text-sm text-zinc-500 lg:hidden">
-          © {new Date().getFullYear()} PBQC. All rights reserved.
+          © {new Date().getFullYear()} PBQC. Alle Rechte vorbehalten.
         </div>
       </div>
     </div>

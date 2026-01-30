@@ -42,20 +42,20 @@ export function ResetPasswordForm() {
       if (error) {
         // Check if the error is due to an expired or invalid link
         if (error.message.includes('Invalid') || error.message.includes('expired')) {
-          toast.error('This reset link has expired or is invalid. Please request a new one.')
+          toast.error('Dieser Rücksetzlink ist abgelaufen oder ungültig. Bitte fordern Sie einen neuen an.')
           setTimeout(() => {
             router.push('/forgot-password')
           }, 2000)
         } else {
-          toast.error(error.message || 'Failed to reset password')
+          toast.error(error.message || 'Passwort konnte nicht zurückgesetzt werden')
         }
         return
       }
 
-      toast.success('Password reset successfully!')
+      toast.success('Passwort erfolgreich zurückgesetzt!')
       router.push('/login')
     } catch {
-      toast.error('An unexpected error occurred')
+      toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {
       setIsLoading(false)
     }
@@ -65,7 +65,7 @@ export function ResetPasswordForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="password">New Password</Label>
+          <Label htmlFor="password">Neues Passwort</Label>
           <Input
             id="password"
             type="password"
@@ -83,7 +83,7 @@ export function ResetPasswordForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
           <Input
             id="confirmPassword"
             type="password"
@@ -99,7 +99,7 @@ export function ResetPasswordForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Resetting...' : 'Reset password'}
+        {isLoading ? 'Wird zurückgesetzt...' : 'Passwort zurücksetzen'}
       </Button>
     </form>
   )

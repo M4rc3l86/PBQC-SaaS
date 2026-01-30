@@ -44,7 +44,7 @@ export function RegisterForm() {
         .single()
 
       if (existingUser) {
-        toast.error('An account with this email already exists')
+        toast.error('Ein Konto mit dieser E-Mail existiert bereits')
         setIsLoading(false)
         return
       }
@@ -62,7 +62,7 @@ export function RegisterForm() {
       })
 
       if (authError) {
-        toast.error(authError.message || 'Failed to create account')
+        toast.error(authError.message || 'Konto konnte nicht erstellt werden')
         setIsLoading(false)
         return
       }
@@ -70,7 +70,7 @@ export function RegisterForm() {
       if (authData.user) {
         // Create company and profile will be handled by database triggers
         // or backend logic. For now, we'll wait and then sign in.
-        toast.success('Account created successfully!')
+        toast.success('Konto erfolgreich erstellt!')
 
         // Auto-login after successful registration
         const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -79,7 +79,7 @@ export function RegisterForm() {
         })
 
         if (signInError) {
-          toast.error('Account created but automatic login failed. Please sign in manually.')
+          toast.error('Konto erstellt, aber die automatische Anmeldung ist fehlgeschlagen. Bitte melden Sie sich manuell an.')
           router.push('/login')
           return
         }
@@ -87,7 +87,7 @@ export function RegisterForm() {
         router.push('/admin')
       }
     } catch {
-      toast.error('An unexpected error occurred')
+      toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {
       setIsLoading(false)
     }
@@ -97,10 +97,10 @@ export function RegisterForm() {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="companyName">Company Name</Label>
+          <Label htmlFor="companyName">Firmenname</Label>
           <Input
             id="companyName"
-            placeholder="Acme Corporation"
+            placeholder="Muster AG"
             disabled={isLoading}
             {...form.register('companyName')}
           />
@@ -112,10 +112,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="adminName">Your Name</Label>
+          <Label htmlFor="adminName">Ihr Name</Label>
           <Input
             id="adminName"
-            placeholder="John Doe"
+            placeholder="Max Mustermann"
             disabled={isLoading}
             {...form.register('adminName')}
           />
@@ -127,11 +127,11 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">E-Mail</Label>
           <Input
             id="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder="name@firma.de"
             disabled={isLoading}
             {...form.register('email')}
           />
@@ -143,7 +143,7 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">Passwort</Label>
           <Input
             id="password"
             type="password"
@@ -162,12 +162,12 @@ export function RegisterForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Creating account...' : 'Create account'}
+        {isLoading ? 'Konto wird erstellt...' : 'Konto erstellen'}
       </Button>
 
       <p className="text-center text-xs text-zinc-600 dark:text-zinc-400">
-        By creating an account, you agree to our Terms of Service and Privacy
-        Policy.
+        Durch das Erstellen eines Kontos stimmen Sie unseren Nutzungsbedingungen und der
+        Datenschutzrichtlinie zu.
       </p>
     </form>
   )

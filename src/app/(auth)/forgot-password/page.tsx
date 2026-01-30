@@ -6,22 +6,22 @@ export default function ForgotPasswordPage() {
     <div className="w-full max-w-md space-y-8">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
-          Reset your password
+          Passwort zurücksetzen
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400">
-          We&apos;ll send you a reset link to your email
+          Wir senden Ihnen einen Rücksetzlink per E-Mail
         </p>
       </div>
 
       <ForgotPasswordForm />
 
       <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Remember your password?{' '}
+        Erinnern Sie sich an Ihr Passwort?{' '}
         <Link
           href="/login"
           className="font-medium text-primary hover:underline"
         >
-          Sign in
+          Anmelden
         </Link>
       </p>
     </div>

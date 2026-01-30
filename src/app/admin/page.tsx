@@ -50,10 +50,10 @@ export default async function AdminDashboard() {
       <main className="p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-950 dark:text-zinc-50">
-            Welcome back, {profile.full_name || 'Admin'}!
+            Willkommen zurück, {profile.full_name || 'Admin'}!
           </h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-            {profile.company?.name || 'Your company'} dashboard
+            {profile.company?.name || 'Ihr Unternehmen'} Dashboard
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default async function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Total Jobs
+                  Gesamtaufträge
                 </p>
                 <p className="mt-2 text-3xl font-bold text-zinc-950 dark:text-zinc-50">
                   0
@@ -91,7 +91,7 @@ export default async function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Active Jobs
+                  Aktive Aufträge
                 </p>
                 <p className="mt-2 text-3xl font-bold text-zinc-950 dark:text-zinc-50">
                   0
@@ -119,7 +119,7 @@ export default async function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Team Members
+                  Teammitglieder
                 </p>
                 <p className="mt-2 text-3xl font-bold text-zinc-950 dark:text-zinc-50">
                   0
@@ -147,36 +147,36 @@ export default async function AdminDashboard() {
         {/* Quick actions placeholder */}
         <div className="mt-8">
           <h2 className="mb-4 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
-            Quick Actions
+            Schnellaktionen
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-lg border bg-white p-6 shadow-sm dark:bg-zinc-900">
               <h3 className="font-semibold text-zinc-950 dark:text-zinc-50">
-                Create New Job
+                Neuen Auftrag erstellen
               </h3>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Create a new quality control job with assigned checklists
+                Erstellen Sie einen neuen Qualitätskontrollauftrag
               </p>
               <button
                 className="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 disabled
               >
-                Coming Soon
+                Demnächst verfügbar
               </button>
             </div>
 
             <div className="rounded-lg border bg-white p-6 shadow-sm dark:bg-zinc-900">
               <h3 className="font-semibold text-zinc-950 dark:text-zinc-50">
-                Manage Checklists
+                Checklisten verwalten
               </h3>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Create and manage quality control checklists
+                Erstellen und verwalten Sie Qualitätskontroll-Checklisten
               </p>
               <button
                 className="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 disabled
               >
-                Coming Soon
+                Demnächst verfügbar
               </button>
             </div>
           </div>

@@ -1,28 +1,28 @@
 import { z } from 'zod'
 
 export const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().email('Ungültige E-Mail-Adresse'),
+  password: z.string().min(1, 'Passwort ist erforderlich'),
 })
 
 export type LoginFormValues = z.infer<typeof loginSchema>
 
 export const registerSchema = z.object({
-  companyName: z.string().min(2, 'Company name must be at least 2 characters'),
-  adminName: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
+  companyName: z.string().min(2, 'Der Firmenname muss mindestens 2 Zeichen lang sein'),
+  adminName: z.string().min(2, 'Der Name muss mindestens 2 Zeichen lang sein'),
+  email: z.string().email('Ungültige E-Mail-Adresse'),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
+    .min(8, 'Das Passwort muss mindestens 8 Zeichen lang sein')
+    .regex(/[A-Z]/, 'Das Passwort muss mindestens einen Großbuchstaben enthalten')
+    .regex(/[a-z]/, 'Das Passwort muss mindestens einen Kleinbuchstaben enthalten')
+    .regex(/[0-9]/, 'Das Passwort muss mindestens eine Zahl enthalten'),
 })
 
 export type RegisterFormValues = z.infer<typeof registerSchema>
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.string().email('Ungültige E-Mail-Adresse'),
 })
 
 export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
@@ -31,14 +31,14 @@ export const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+      .min(8, 'Das Passwort muss mindestens 8 Zeichen lang sein')
+      .regex(/[A-Z]/, 'Das Passwort muss mindestens einen Großbuchstaben enthalten')
+      .regex(/[a-z]/, 'Das Passwort muss mindestens einen Kleinbuchstaben enthalten')
+      .regex(/[0-9]/, 'Das Passwort muss mindestens eine Zahl enthalten'),
+    confirmPassword: z.string().min(1, 'Bitte bestätigen Sie Ihr Passwort'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'Die Passwörter stimmen nicht überein',
     path: ['confirmPassword'],
   })
 

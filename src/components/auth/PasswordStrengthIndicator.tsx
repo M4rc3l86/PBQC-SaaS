@@ -12,25 +12,25 @@ function getPasswordStrength(password: string): {
   if (password.length >= 8) {
     score += 1
   } else {
-    feedback.push('At least 8 characters')
+    feedback.push('Mindestens 8 Zeichen')
   }
 
   if (/[A-Z]/.test(password)) {
     score += 1
   } else {
-    feedback.push('One uppercase letter')
+    feedback.push('Ein Großbuchstabe')
   }
 
   if (/[a-z]/.test(password)) {
     score += 1
   } else {
-    feedback.push('One lowercase letter')
+    feedback.push('Ein Kleinbuchstabe')
   }
 
   if (/[0-9]/.test(password)) {
     score += 1
   } else {
-    feedback.push('One number')
+    feedback.push('Eine Zahl')
   }
 
   return { score, feedback }
@@ -49,10 +49,10 @@ export function PasswordStrengthIndicator({
   }
 
   const getStrengthText = () => {
-    if (score <= 1) return 'Weak'
-    if (score === 2) return 'Fair'
-    if (score === 3) return 'Good'
-    return 'Strong'
+    if (score <= 1) return 'Schwach'
+    if (score === 2) return 'Akzeptabel'
+    if (score === 3) return 'Gut'
+    return 'Stark'
   }
 
   const getStrengthWidth = () => {
@@ -63,7 +63,7 @@ export function PasswordStrengthIndicator({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-xs text-zinc-600 dark:text-zinc-400">
-          Password strength
+          Passwortstärke
         </span>
         <span className="text-xs font-medium text-zinc-900 dark:text-zinc-50">
           {getStrengthText()}

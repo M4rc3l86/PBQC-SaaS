@@ -6,22 +6,22 @@ export default function LoginPage() {
     <div className="w-full max-w-md space-y-8">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
-          Welcome back
+          Willkommen zurück
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400">
-          Sign in to your account to continue
+          Melden Sie sich an, um fortzufahren
         </p>
       </div>
 
       <LoginForm />
 
       <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Don&apos;t have an account?{' '}
+        Haben Sie kein Konto?{' '}
         <Link
           href="/register"
           className="font-medium text-primary hover:underline"
         >
-          Sign up
+          Registrieren
         </Link>
       </p>
     </div>
