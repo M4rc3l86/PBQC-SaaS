@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/components/auth/UserMenu'
+import { MobileUserMenu } from '@/components/auth/MobileUserMenu'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -42,6 +43,7 @@ export default async function AdminDashboard() {
             PBQC
           </div>
 
+          <MobileUserMenu />
           <UserMenu />
         </div>
       </header>

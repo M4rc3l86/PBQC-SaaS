@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator'
 import { toast } from 'sonner'
+import { checkPasswordBreach } from '@/lib/password-security'
 
 export function ResetPasswordForm() {
   const router = useRouter()
@@ -57,6 +58,16 @@ export function ResetPasswordForm() {
     setIsLoading(true)
 
     try {
+      // Check password against HIBP breach database
+      const breachCheck = await checkPasswordBreach(values.password)
+      if (breachCheck.isBreached) {
+        toast.error(
+          'Dieses Passwort wurde in Datenlecks gefunden. Bitte wählen Sie ein anderes.'
+        )
+        setIsLoading(false)
+        return
+      }
+
       // For password reset from email, user is already authenticated via the recovery token
       const { error } = await supabase.auth.updateUser({
         password: values.password,
@@ -68,7 +79,20 @@ export function ResetPasswordForm() {
       }
 
       toast.success('Passwort erfolgreich zurückgesetzt!')
-      router.push('/login')
+
+      // User is already authenticated via recovery token - get role for redirect
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      if (authUser) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', authUser.id)
+          .single()
+        router.push(profile?.role === 'admin' ? '/admin' : '/employee')
+        router.refresh()
+      } else {
+        router.push('/login') // Fallback
+      }
     } catch {
       toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {
@@ -126,7 +150,7 @@ export function ResetPasswordForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Wird zurückgesetzt...' : 'Passwort zurücksetzen'}
+        {isLoading ? 'Passwort wird überprüft...' : 'Passwort zurücksetzen'}
       </Button>
     </form>
   )

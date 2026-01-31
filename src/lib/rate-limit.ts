@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { headers } from 'next/headers'
 
-export type RateLimitAction = 'login' | 'forgot_password'
+export type RateLimitAction = 'login' | 'forgot_password' | 'change_password'
 
 interface RateLimitConfig {
   maxAttempts: number
@@ -16,6 +16,10 @@ const RATE_LIMIT_CONFIGS: Record<RateLimitAction, RateLimitConfig> = {
   forgot_password: {
     maxAttempts: 3,
     windowDuration: 60 * 60, // 1 hour
+  },
+  change_password: {
+    maxAttempts: 3,
+    windowDuration: 30 * 60, // 30 minutes
   },
 }
 
@@ -59,7 +63,7 @@ export async function checkRateLimit(
   action: RateLimitAction
 ): Promise<RateLimitResult> {
   const config = RATE_LIMIT_CONFIGS[action]
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const now = new Date()
   const windowStart = new Date(now.getTime() - config.windowDuration * 1000)
@@ -117,7 +121,7 @@ export async function recordRateLimitAttempt(
   action: RateLimitAction
 ): Promise<void> {
   const config = RATE_LIMIT_CONFIGS[action]
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const now = new Date()
   const windowStart = new Date(now.getTime() - config.windowDuration * 1000)
@@ -175,7 +179,7 @@ export async function resetRateLimit(
   identifier: string,
   action: RateLimitAction
 ): Promise<void> {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase
     .from('rate_limits')

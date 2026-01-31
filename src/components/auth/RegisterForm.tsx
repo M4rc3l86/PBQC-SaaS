@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator'
 import { toast } from 'sonner'
+import { checkPasswordBreach } from '@/lib/password-security'
 
 export function RegisterForm() {
   const router = useRouter()
@@ -37,6 +38,16 @@ export function RegisterForm() {
     setIsLoading(true)
 
     try {
+      // Check password against HIBP breach database
+      const breachCheck = await checkPasswordBreach(values.password)
+      if (breachCheck.isBreached) {
+        toast.error(
+          'Dieses Passwort wurde in Datenlecks gefunden. Bitte wählen Sie ein anderes.'
+        )
+        setIsLoading(false)
+        return
+      }
+
       // Check if email already exists using RPC function
       const { data: emailExists, error: checkError } = await supabase.rpc('check_email_exists', {
         email_param: values.email
@@ -176,7 +187,7 @@ export function RegisterForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Konto wird erstellt...' : 'Konto erstellen'}
+        {isLoading ? 'Passwort wird überprüft...' : 'Konto erstellen'}
       </Button>
 
       <p className="text-center text-xs text-zinc-600 dark:text-zinc-400">

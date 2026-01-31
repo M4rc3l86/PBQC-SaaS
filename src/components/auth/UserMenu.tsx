@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -54,6 +55,8 @@ export function UserMenu() {
     }
   }
 
+  const settingsPath = user?.role === 'admin' ? '/admin/settings' : '/employee/settings'
+
   if (isLoading) {
     return (
       <div className="flex items-center gap-4">
@@ -63,7 +66,7 @@ export function UserMenu() {
   }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="hidden md:flex items-center gap-4">
       <div className="text-right">
         <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
           {user?.full_name || 'User'}
@@ -72,6 +75,15 @@ export function UserMenu() {
           {user?.role === 'admin' ? 'Administrator' : 'Mitarbeiter'}
         </p>
       </div>
+
+      <Link href={settingsPath}>
+        <Button
+          variant="ghost"
+          size="sm"
+        >
+          Profil
+        </Button>
+      </Link>
 
       <Button
         variant="outline"

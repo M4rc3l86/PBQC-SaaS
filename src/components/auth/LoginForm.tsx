@@ -10,12 +10,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
 
 export function LoginForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -29,62 +27,22 @@ export function LoginForm() {
     setIsLoading(true)
 
     try {
-      // Use browser client for authentication - this properly sets cookies
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
       })
 
-      if (authError) {
-        if (authError.message.includes('Invalid login credentials')) {
-          toast.error('Ungültige Anmeldedaten')
-        } else if (authError.message.includes('Email not confirmed')) {
-          toast.error('Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse')
-        } else {
-          toast.error(authError.message || 'Anmeldung fehlgeschlagen')
-        }
+      const data = await response.json()
+
+      if (!data.success) {
+        toast.error(data.message)
         return
       }
-
-      if (!authData.user) {
-        toast.error('Anmeldung fehlgeschlagen')
-        return
-      }
-
-      // Get profile to check role and status
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role, status')
-        .eq('id', authData.user.id)
-        .single()
-
-      if (profileError || !profile) {
-        toast.error('Benutzerprofil konnte nicht geladen werden')
-        return
-      }
-
-      if (profile.status === 'deactivated') {
-        await supabase.auth.signOut()
-        toast.error('Ihr Konto wurde deaktiviert. Bitte kontaktieren Sie den Support.')
-        return
-      }
-
-      // Update last_login
-      await supabase
-        .from('profiles')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', authData.user.id)
 
       // Successful login - redirect based on role
-      if (profile.role === 'admin') {
-        router.push('/admin')
-        router.refresh()
-      } else if (profile.role === 'employee') {
-        router.push('/employee')
-        router.refresh()
-      } else {
-        toast.error('Ungültige Benutzerrolle')
-      }
+      router.push(data.redirectTo)
+      router.refresh()
     } catch {
       toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {
