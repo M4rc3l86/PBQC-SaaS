@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createClient } from '@/lib/supabase/client'
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormValues,
@@ -13,46 +12,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 
-const FORGOT_PASSWORD_LIMIT_KEY = 'forgotPasswordAttempts'
-const FORGOT_PASSWORD_LIMIT_DURATION = 60 * 60 * 1000 // 1 hour
-const MAX_FORGOT_PASSWORD_ATTEMPTS = 3
-
-function getForgotPasswordAttempts(): { count: number; lastAttempt: number } {
-  if (typeof window === 'undefined') return { count: 0, lastAttempt: 0 }
-  const data = localStorage.getItem(FORGOT_PASSWORD_LIMIT_KEY)
-  if (!data) return { count: 0, lastAttempt: 0 }
-  return JSON.parse(data)
-}
-
-function setForgotPasswordAttempts(count: number) {
-  if (typeof window === 'undefined') return
-  localStorage.setItem(
-    FORGOT_PASSWORD_LIMIT_KEY,
-    JSON.stringify({ count, lastAttempt: Date.now() })
-  )
-}
-
-function isForgotPasswordRateLimited(): boolean {
-  const { count, lastAttempt } = getForgotPasswordAttempts()
-  if (count >= MAX_FORGOT_PASSWORD_ATTEMPTS) {
-    const timePassed = Date.now() - lastAttempt
-    if (timePassed < FORGOT_PASSWORD_LIMIT_DURATION) {
-      return true
-    }
-    setForgotPasswordAttempts(0)
-  }
-  return false
-}
-
-function incrementForgotPasswordAttempts() {
-  const { count } = getForgotPasswordAttempts()
-  setForgotPasswordAttempts(count + 1)
-}
-
 export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const supabase = createClient()
 
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -62,27 +24,31 @@ export function ForgotPasswordForm() {
   })
 
   const onSubmit = async (values: ForgotPasswordFormValues) => {
-    if (isForgotPasswordRateLimited()) {
-      toast.error('Zu viele Anfragen zum Zurücksetzen des Passworts. Bitte versuchen Sie es später erneut.')
-      return
-    }
-
     setIsLoading(true)
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
       })
 
-      incrementForgotPasswordAttempts()
+      const data = await response.json()
 
-      if (error) {
-        toast.error(error.message || 'Rücksetz-E-Mail konnte nicht gesendet werden')
+      if (!response.ok) {
+        if (data.error === 'rate_limited') {
+          const retryMinutes = Math.ceil((data.retryAfter || 0) / 60)
+          toast.error(`Zu viele Anfragen. Bitte versuchen Sie es in ${retryMinutes} ${retryMinutes === 1 ? 'Minute' : 'Minuten'} erneut.`)
+        } else {
+          toast.error(data.message || 'Ein Fehler ist aufgetreten')
+        }
         return
       }
 
       setIsSuccess(true)
-      toast.success('Wenn ein Konto mit dieser E-Mail existiert, wurde ein Rücksetzlink gesendet.')
+      toast.success(data.message || 'Wenn ein Konto mit dieser E-Mail existiert, wurde ein Rücksetzlink gesendet.')
     } catch {
       toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {

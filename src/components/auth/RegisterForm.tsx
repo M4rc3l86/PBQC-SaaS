@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,7 +18,8 @@ import { toast } from 'sonner'
 export function RegisterForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
+  // Memoize the Supabase client to avoid creating new instances on every render
+  const supabase = useMemo(() => createClient(), [])
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -36,14 +37,19 @@ export function RegisterForm() {
     setIsLoading(true)
 
     try {
-      // Check if email already exists
-      const { data: existingUser } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('email', values.email)
-        .single()
+      // Check if email already exists using RPC function
+      const { data: emailExists, error: checkError } = await supabase.rpc('check_email_exists', {
+        email_param: values.email
+      })
 
-      if (existingUser) {
+      if (checkError) {
+        console.error('Email check error:', checkError)
+        toast.error('Fehler bei der Überprüfung der E-Mail')
+        setIsLoading(false)
+        return
+      }
+
+      if (emailExists) {
         toast.error('Ein Konto mit dieser E-Mail existiert bereits')
         setIsLoading(false)
         return
