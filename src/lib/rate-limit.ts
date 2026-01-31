@@ -86,7 +86,7 @@ export async function checkRateLimit(
   }
 
   // Check if window has expired
-  const recordWindowStart = new Date(existing.window_start)
+  const recordWindowStart = new Date(existing.window_start!)
   const windowExpiry = new Date(recordWindowStart.getTime() + config.windowDuration * 1000)
 
   if (now >= windowExpiry) {
@@ -137,7 +137,7 @@ export async function recordRateLimitAttempt(
 
   if (existing) {
     // Check if window has expired
-    const recordWindowStart = new Date(existing.window_start)
+    const recordWindowStart = new Date(existing.window_start!)
     const windowExpiry = new Date(recordWindowStart.getTime() + config.windowDuration * 1000)
 
     if (now >= windowExpiry) {

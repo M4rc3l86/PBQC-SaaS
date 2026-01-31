@@ -84,7 +84,7 @@ export default async function EmployeeSettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ChangePasswordForm userRole="employee" />
+              <ChangePasswordForm />
             </CardContent>
           </Card>
         </div>

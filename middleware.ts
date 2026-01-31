@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
       .single()
 
     // Check if user is deactivated
-    if (profile?.status === 'deactivated') {
+    if (profile?.status === 'inactive') {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       url.searchParams.set('error', 'deactivated')

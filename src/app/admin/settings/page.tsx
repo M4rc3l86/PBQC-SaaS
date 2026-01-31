@@ -84,7 +84,7 @@ export default async function AdminSettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ChangePasswordForm userRole="admin" />
+              <ChangePasswordForm />
             </CardContent>
           </Card>
         </div>

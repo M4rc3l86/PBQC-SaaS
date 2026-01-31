@@ -15,11 +15,7 @@ import { PasswordStrengthIndicator } from './PasswordStrengthIndicator'
 import { toast } from 'sonner'
 import { checkPasswordBreach } from '@/lib/password-security'
 
-interface ChangePasswordFormProps {
-  userRole?: 'admin' | 'employee'
-}
-
-export function ChangePasswordForm({ userRole = 'admin' }: ChangePasswordFormProps) {
+export function ChangePasswordForm() {
   const [isLoading, setIsLoading] = useState(false)
   // Memoize the Supabase client to avoid creating new instances on every render
   const supabase = useMemo(() => createClient(), [])

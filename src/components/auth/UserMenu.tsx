@@ -56,6 +56,7 @@ export function UserMenu() {
   }
 
   const settingsPath = user?.role === 'admin' ? '/admin/settings' : '/employee/settings'
+  const profilePath = user?.role === 'admin' ? '/admin/profile' : '/employee/profile'
 
   if (isLoading) {
     return (
@@ -76,12 +77,23 @@ export function UserMenu() {
         </p>
       </div>
 
-      <Link href={settingsPath}>
-        <Button
-          variant="ghost"
-          size="sm"
-        >
+      {user?.role === 'admin' && (
+        <Link href="/admin/team">
+          <Button variant="ghost" size="sm">
+            Team
+          </Button>
+        </Link>
+      )}
+
+      <Link href={profilePath}>
+        <Button variant="ghost" size="sm">
           Profil
+        </Button>
+      </Link>
+
+      <Link href={settingsPath}>
+        <Button variant="ghost" size="sm">
+          Einstellungen
         </Button>
       </Link>
 
