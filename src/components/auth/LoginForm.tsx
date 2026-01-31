@@ -100,6 +100,7 @@ export function LoginForm() {
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             placeholder="name@firma.de"
             disabled={isLoading}
             {...form.register('email')}
@@ -124,6 +125,7 @@ export function LoginForm() {
           <Input
             id="password"
             type="password"
+            autoComplete="current-password"
             disabled={isLoading}
             {...form.register('password')}
           />

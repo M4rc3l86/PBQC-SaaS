@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createClient } from '@/lib/supabase/client'
@@ -17,7 +17,6 @@ import { toast } from 'sonner'
 
 export function ResetPasswordForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [isValidToken, setIsValidToken] = useState(true)
   // Memoize the Supabase client to avoid creating new instances on every render
@@ -46,7 +45,7 @@ export function ResetPasswordForm() {
       }
     }
     checkAuth()
-  }, [router])
+  }, [router, supabase])
 
   const onSubmit = async (values: ResetPasswordFormValues) => {
     if (!isValidToken) {
@@ -95,6 +94,7 @@ export function ResetPasswordForm() {
           <Input
             id="password"
             type="password"
+            autoComplete="new-password"
             disabled={isLoading}
             {...form.register('password')}
           />
@@ -113,6 +113,7 @@ export function ResetPasswordForm() {
           <Input
             id="confirmPassword"
             type="password"
+            autoComplete="new-password"
             disabled={isLoading}
             {...form.register('confirmPassword')}
           />

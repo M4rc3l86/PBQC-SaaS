@@ -6,7 +6,7 @@ export async function updateSession(request: NextRequest): Promise<{
   response: NextResponse
   user: User | null
 }> {
-  let supabaseResponse = NextResponse.next({
+  const supabaseResponse = NextResponse.next({
     request,
   })
 

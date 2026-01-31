@@ -74,10 +74,6 @@ export function RegisterForm() {
       }
 
       if (authData.user) {
-        // Create company and profile will be handled by database triggers
-        // or backend logic. For now, we'll wait and then sign in.
-        toast.success('Konto erfolgreich erstellt!')
-
         // Auto-login after successful registration
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: values.email,
@@ -90,7 +86,15 @@ export function RegisterForm() {
           return
         }
 
-        router.push('/admin')
+        // Get user role for redirect
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', authData.user.id)
+          .single()
+
+        toast.success('Konto erfolgreich erstellt!')
+        router.push(profile?.role === 'admin' ? '/admin' : '/employee')
       }
     } catch {
       toast.error('Ein unerwarteter Fehler ist aufgetreten')
@@ -106,6 +110,7 @@ export function RegisterForm() {
           <Label htmlFor="companyName">Firmenname</Label>
           <Input
             id="companyName"
+            autoComplete="organization"
             placeholder="Muster AG"
             disabled={isLoading}
             {...form.register('companyName')}
@@ -121,6 +126,7 @@ export function RegisterForm() {
           <Label htmlFor="adminName">Ihr Name</Label>
           <Input
             id="adminName"
+            autoComplete="name"
             placeholder="Max Mustermann"
             disabled={isLoading}
             {...form.register('adminName')}
@@ -137,6 +143,7 @@ export function RegisterForm() {
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             placeholder="name@firma.de"
             disabled={isLoading}
             {...form.register('email')}
@@ -153,6 +160,7 @@ export function RegisterForm() {
           <Input
             id="password"
             type="password"
+            autoComplete="new-password"
             disabled={isLoading}
             {...form.register('password')}
           />
