@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/components/auth/UserMenu'
@@ -10,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 export default async function AdminSettingsPage() {
   const supabase = await createClient()
@@ -44,12 +46,12 @@ export default async function AdminSettingsPage() {
       {/* Header */}
       <header className="border-b bg-white dark:bg-zinc-900">
         <div className="flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-2 font-bold text-xl">
+          <Link href="/admin" className="flex items-center gap-2 font-bold text-xl">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               PB
             </div>
             PBQC
-          </div>
+          </Link>
 
           <MobileUserMenu />
           <UserMenu />
@@ -59,6 +61,11 @@ export default async function AdminSettingsPage() {
       {/* Main content */}
       <main className="p-6">
         <div className="mb-8">
+          <Link href="/admin">
+            <Button variant="ghost" className="gap-2 px-0 mb-4">
+              ← Zurück zum Dashboard
+            </Button>
+          </Link>
           <h1 className="text-3xl font-bold text-zinc-950 dark:text-zinc-50">
             Einstellungen
           </h1>
