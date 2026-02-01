@@ -59,6 +59,7 @@ export function MobileUserMenu() {
   }
 
   const settingsPath = user?.role === 'admin' ? '/admin/settings' : '/employee/settings'
+  const profilePath = user?.role === 'admin' ? '/admin/profile' : '/employee/profile'
 
   if (isLoading) {
     return (
@@ -96,6 +97,20 @@ export function MobileUserMenu() {
           </div>
 
           <div className="p-2">
+            {user?.role === 'admin' && (
+              <Link href="/admin/team" onClick={() => setIsOpen(false)}>
+                <button className="w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800">
+                  Team verwalten
+                </button>
+              </Link>
+            )}
+
+            <Link href={profilePath} onClick={() => setIsOpen(false)}>
+              <button className="w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800">
+                Mein Profil
+              </button>
+            </Link>
+
             <Link href={settingsPath} onClick={() => setIsOpen(false)}>
               <button className="w-full rounded-md px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800">
                 Passwort ändern

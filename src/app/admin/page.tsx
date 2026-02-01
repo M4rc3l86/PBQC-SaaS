@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/components/auth/UserMenu'
 import { MobileUserMenu } from '@/components/auth/MobileUserMenu'
+import { Logo } from '@/components/auth/Logo'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -31,17 +33,23 @@ export default async function AdminDashboard() {
     redirect('/login')
   }
 
+  // Check if user needs onboarding
+  if (!profile.phone && !profile.last_login) {
+    redirect('/admin/onboarding')
+  }
+
+  // Get team member count
+  const { count: teamCount } = await supabase
+    .from('profiles')
+    .select('*', { count: 'exact', head: true })
+    .eq('company_id', profile.company_id)
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Header */}
       <header className="border-b bg-white dark:bg-zinc-900">
         <div className="flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-2 font-bold text-xl">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              PB
-            </div>
-            PBQC
-          </div>
+          <Logo />
 
           <MobileUserMenu />
           <UserMenu />
@@ -117,14 +125,17 @@ export default async function AdminDashboard() {
             </div>
           </div>
 
-          <div className="rounded-lg border bg-white p-6 shadow-sm dark:bg-zinc-900">
+          <Link
+            href="/admin/team"
+            className="rounded-lg border bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:bg-zinc-900"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
                   Teammitglieder
                 </p>
                 <p className="mt-2 text-3xl font-bold text-zinc-950 dark:text-zinc-50">
-                  0
+                  {teamCount ?? 0}
                 </p>
               </div>
               <div className="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
@@ -143,7 +154,7 @@ export default async function AdminDashboard() {
                 </svg>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Quick actions placeholder */}

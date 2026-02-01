@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createClient } from '@/lib/supabase/client'
@@ -15,14 +15,17 @@ import { PasswordStrengthIndicator } from './PasswordStrengthIndicator'
 import { toast } from 'sonner'
 import { checkPasswordBreach } from '@/lib/password-security'
 
-interface ChangePasswordFormProps {
-  userRole?: 'admin' | 'employee'
-}
-
-export function ChangePasswordForm({ userRole = 'admin' }: ChangePasswordFormProps) {
+export function ChangePasswordForm() {
   const [isLoading, setIsLoading] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
   // Memoize the Supabase client to avoid creating new instances on every render
   const supabase = useMemo(() => createClient(), [])
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserEmail(user?.email || null)
+    })
+  }, [supabase])
 
   const form = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
@@ -95,6 +98,18 @@ export function ChangePasswordForm({ userRole = 'admin' }: ChangePasswordFormPro
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">E-Mail</Label>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="username"
+            value={userEmail || 'Wird geladen...'}
+            disabled
+            className="bg-muted"
+          />
+        </div>
+
         <div className="space-y-2">
           <Label htmlFor="currentPassword">Aktuelles Passwort</Label>
           <Input

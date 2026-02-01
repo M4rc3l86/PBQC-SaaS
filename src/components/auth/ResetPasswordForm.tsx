@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createClient } from '@/lib/supabase/client'
+import type { EmailOtpType } from '@supabase/supabase-js'
 import {
   resetPasswordSchema,
   type ResetPasswordFormValues,
@@ -19,7 +20,7 @@ import { checkPasswordBreach } from '@/lib/password-security'
 export function ResetPasswordForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [isValidToken, setIsValidToken] = useState(true)
+  const [isValidToken, setIsValidToken] = useState<boolean | null>(null) // null = checking, true = valid, false = invalid
   // Memoize the Supabase client to avoid creating new instances on every render
   const supabase = useMemo(() => createClient(), [])
 
@@ -33,25 +34,85 @@ export function ResetPasswordForm() {
 
   const password = form.watch('password')
 
-  // Check if user is authenticated (has valid recovery token)
+  // Check if user is authenticated (has valid recovery token from email link)
+  // First, try to extract and exchange tokens from URL hash fragment
   useEffect(() => {
+    let isMounted = true
+
     const checkAuth = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser()
-      if (error || !user) {
+      // First, check if we already have a session
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (session) {
+        if (isMounted) setIsValidToken(true)
+        return
+      }
+
+      // No session - check if there are tokens in the URL hash fragment
+      // Recovery links use: #access_token=xxx&refresh_token=xxx&type=recovery
+      // Invite links use: #token_hash=xxx&type=invite
+      const hashParams = new URLSearchParams(window.location.hash.substring(1))
+      const accessToken = hashParams.get('access_token')
+      const refreshToken = hashParams.get('refresh_token')
+      const tokenHash = hashParams.get('token_hash')
+      const type = hashParams.get('type')
+
+      if (accessToken && refreshToken) {
+        // Recovery flow - exchange tokens directly for a session
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        })
+
+        if (!sessionError && isMounted) {
+          setIsValidToken(true)
+          // Clean up the URL by removing the hash fragment
+          window.history.replaceState({}, document.title, window.location.pathname)
+          return
+        }
+      } else if (tokenHash && type) {
+        // Invite flow - verify OTP with token_hash
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: type as EmailOtpType,
+        })
+
+        if (!verifyError && isMounted) {
+          setIsValidToken(true)
+          // Clean up the URL by removing the hash fragment
+          window.history.replaceState({}, document.title, window.location.pathname)
+          return
+        } else if (isMounted) {
+          console.error('Token verification failed:', verifyError)
+        }
+      }
+
+      // No session and couldn't establish one from tokens
+      if (isMounted) {
         setIsValidToken(false)
-        toast.error('Ungültiger oder abgelaufener Rücksetzlink. Bitte fordern Sie einen neuen an.')
+        const urlParams = new URLSearchParams(window.location.search)
+        if (urlParams.get('error') === 'invalid_token') {
+          toast.error('Ungültiger oder abgelaufener Rücksetzlink. Bitte fordern Sie einen neuen an.')
+        } else {
+          toast.error('Ungültiger Rücksetzlink. Bitte nutzen Sie den Link aus der E-Mail.')
+        }
         setTimeout(() => {
-          router.push('/forgot-password')
+          router.push('/login')
         }, 3000)
       }
     }
+
     checkAuth()
+
+    return () => {
+      isMounted = false
+    }
   }, [router, supabase])
 
   const onSubmit = async (values: ResetPasswordFormValues) => {
-    if (!isValidToken) {
-      toast.error('Ungültiger Rücksetzlink. Bitte fordern Sie einen neuen an.')
-      router.push('/forgot-password')
+    if (!isValidToken) { // Covers both null (checking) and false (invalid)
+      toast.error('Ungültiger Rücksetzlink.')
+      router.push('/login')
       return
     }
 
@@ -106,6 +167,19 @@ export function ResetPasswordForm() {
         <p className="text-sm text-destructive">
           Ungültiger oder abgelaufener Rücksetzlink. Sie werden weitergeleitet...
         </p>
+      </div>
+    )
+  }
+
+  if (isValidToken === null) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Rücksetzlink wird überprüft...
+          </p>
+        </div>
       </div>
     )
   }

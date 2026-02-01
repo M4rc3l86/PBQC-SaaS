@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string
+          company_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          target_user_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          company_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_user_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          company_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_user_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
@@ -49,6 +93,50 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      email_verifications: {
+        Row: {
+          company_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          new_email: string
+          old_email: string
+          token: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          new_email: string
+          old_email: string
+          token: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          new_email?: string
+          old_email?: string
+          token?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_verifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -97,12 +185,47 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          action: string
+          attempt_count: number
+          created_at: string | null
+          id: string
+          identifier: string
+          last_attempt_at: string | null
+          updated_at: string | null
+          window_start: string | null
+        }
+        Insert: {
+          action: string
+          attempt_count?: number
+          created_at?: string | null
+          id?: string
+          identifier: string
+          last_attempt_at?: string | null
+          updated_at?: string | null
+          window_start?: string | null
+        }
+        Update: {
+          action?: string
+          attempt_count?: number
+          created_at?: string | null
+          id?: string
+          identifier?: string
+          last_attempt_at?: string | null
+          updated_at?: string | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      auth_user_company_id: { Args: never; Returns: string }
+      auth_user_role: { Args: never; Returns: string }
+      check_email_exists: { Args: { email_param: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
