@@ -9,6 +9,7 @@ import {
   type OnboardingFormValues,
 } from '@/lib/validations/users'
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -19,7 +20,6 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
-import { PasswordStrengthIndicator } from '@/components/auth/PasswordStrengthIndicator'
 import { Loader2 } from 'lucide-react'
 
 interface OnboardingFormProps {
@@ -34,14 +34,9 @@ export function OnboardingForm({ role }: OnboardingFormProps) {
   const form = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      password: '',
-      confirmPassword: '',
-      fullName: '',
       phone: '',
     },
   })
-
-  const password = form.watch('password')
 
   const onSubmit = async (values: OnboardingFormValues) => {
     setIsSubmitting(true)
@@ -54,21 +49,14 @@ export function OnboardingForm({ role }: OnboardingFormProps) {
         return
       }
 
-      // Update password
-      const { error: passwordError } = await supabase.auth.updateUser({
-        password: values.password,
-      })
+      // Get full_name from auth metadata (set during registration)
+      const fullName = user.user_metadata.full_name || user.user_metadata.fullName || ''
 
-      if (passwordError) {
-        toast.error(passwordError.message || 'Fehler beim Aktualisieren des Passworts')
-        return
-      }
-
-      // Update profile
+      // Update profile with full_name from metadata and phone number
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
-          full_name: values.fullName,
+          full_name: fullName,
           phone: values.phone || null,
         })
         .eq('id', user.id)
@@ -90,93 +78,38 @@ export function OnboardingForm({ role }: OnboardingFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <FormField
-        control={form.control}
-        name="fullName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Voller Name</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Max Mustermann"
-                disabled={isSubmitting}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefon</FormLabel>
+              <FormControl>
+                <Input
+                  type="tel"
+                  placeholder="+49 123 456789"
+                  disabled={isSubmitting}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="phone"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Telefon (optional)</FormLabel>
-            <FormControl>
-              <Input
-                type="tel"
-                placeholder="+49 123 456789"
-                disabled={isSubmitting}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Passwort</FormLabel>
-            <FormControl>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                disabled={isSubmitting}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-            {password && <PasswordStrengthIndicator password={password} />}
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="confirmPassword"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Passwort bestätigen</FormLabel>
-            <FormControl>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                disabled={isSubmitting}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Wird eingerichtet...
-          </>
-        ) : (
-          'Profil einrichten'
-        )}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Wird eingerichtet...
+            </>
+          ) : (
+            'Profil einrichten'
+          )}
+        </Button>
+      </form>
+    </Form>
   )
 }

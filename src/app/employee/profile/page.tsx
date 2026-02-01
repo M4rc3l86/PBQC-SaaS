@@ -6,7 +6,7 @@ import { ProfileForm } from '@/components/profile/profile-form'
 import { Separator } from '@/components/ui/separator'
 import { Logo } from '@/components/auth/Logo'
 
-export default async function AdminProfilePage() {
+export default async function EmployeeProfilePage() {
   const supabase = await createClient()
 
   const {
@@ -24,14 +24,14 @@ export default async function AdminProfilePage() {
     .eq('id', user.id)
     .single()
 
-  // Verify user is admin
-  if (!profile || profile.role !== 'admin') {
+  // Verify user is employee
+  if (!profile || profile.role !== 'employee') {
     redirect('/login')
   }
 
   // Check if user needs onboarding
   if (!profile.phone && !profile.last_login) {
-    redirect('/admin/onboarding')
+    redirect('/employee/onboarding')
   }
 
   return (
@@ -71,7 +71,7 @@ export default async function AdminProfilePage() {
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Rolle</span>
-                <span className="font-medium">Administrator</span>
+                <span className="font-medium">Mitarbeiter</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Firma</span>

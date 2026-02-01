@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/components/auth/UserMenu'
 import { MobileUserMenu } from '@/components/auth/MobileUserMenu'
 import { TeamList } from '@/components/admin/team-list'
+import { Logo } from '@/components/auth/Logo'
 
 export default async function AdminTeamPage() {
   const supabase = await createClient()
@@ -37,12 +38,7 @@ export default async function AdminTeamPage() {
       {/* Header */}
       <header className="border-b bg-white dark:bg-zinc-900">
         <div className="flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-2 font-bold text-xl">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              PB
-            </div>
-            PBQC
-          </div>
+          <Logo />
 
           <MobileUserMenu />
           <UserMenu />

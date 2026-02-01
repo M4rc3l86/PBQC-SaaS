@@ -103,12 +103,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if already inactive
-    if (targetProfile.status === 'inactive') {
+    // Check if already deactivated
+    if (targetProfile.status === 'deactivated') {
       return NextResponse.json(
         {
           success: false,
-          error: 'already_inactive',
+          error: 'already_deactivated',
           message: 'Der Benutzer ist bereits deaktiviert',
         },
         { status: 400 }
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     // Ban the user to revoke all sessions
     const { error: banError } = await supabaseAdmin.auth.admin.updateUserById(
       userId,
-      { ban_duration: '9999y' } // Ban for effectively forever
+      { ban_duration: '87600h' } // Ban for 10 years
     )
 
     if (banError) {
@@ -153,9 +153,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Update profile status
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('profiles')
-      .update({ status: 'inactive' })
+      .update({ status: 'deactivated' })
       .eq('id', userId)
 
     if (updateError) {
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
       userId,
       {
         old_values: { status: targetProfile.status },
-        new_values: { status: 'inactive' }
+        new_values: { status: 'deactivated' }
       }
     )
 

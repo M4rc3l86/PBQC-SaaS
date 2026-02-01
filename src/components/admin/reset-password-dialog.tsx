@@ -39,12 +39,12 @@ export function ResetPasswordDialog({
           <DialogTitle>Passwort zurücksetzen</DialogTitle>
           <DialogDescription>
             Möchten Sie das Passwort für <strong>{employee?.email}</strong> zurücksetzen?
-            Der Mitarbeiter erhält eine E-Mail mit einem Link zum Festlegen eines neuen
-            Passworts.
+            Ein Rücksetzlink wird in der Server-Konsole protokolliert, die Sie dem Mitarbeiter
+            manuell senden können.
             {remainingAttempts !== undefined && remainingAttempts < 3 && (
-              <p className="text-amber-600 dark:text-amber-400 mt-2">
+              <span className="text-amber-600 dark:text-amber-400 mt-2 block">
                 Noch {remainingAttempts} von {MAX_RESETS_PER_HOUR} Rücksetzungen in dieser Stunde verfügbar.
-              </p>
+              </span>
             )}
           </DialogDescription>
         </DialogHeader>
@@ -62,7 +62,7 @@ export function ResetPasswordDialog({
             onClick={onConfirm}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Wird gesendet...' : 'E-Mail senden'}
+            {isSubmitting ? 'Wird generiert...' : 'Link generieren'}
           </Button>
         </DialogFooter>
       </DialogContent>

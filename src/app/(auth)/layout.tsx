@@ -1,3 +1,5 @@
+import { Logo } from '@/components/auth/Logo'
+
 export default function AuthLayout({
   children,
 }: {
@@ -7,12 +9,7 @@ export default function AuthLayout({
     <div className="grid min-h-screen lg:grid-cols-2">
       {/* Left side - Branding */}
       <div className="hidden lg:flex flex-col justify-between border-r bg-zinc-950 p-12 text-zinc-50">
-        <div className="flex items-center gap-2 font-bold text-xl">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            PB
-          </div>
-          PBQC
-        </div>
+        <Logo href="/" className="text-zinc-50" />
 
         <div className="space-y-6">
           <h1 className="text-4xl font-bold tracking-tight">
@@ -32,11 +29,8 @@ export default function AuthLayout({
       {/* Right side - Form */}
       <div className="flex flex-col items-center justify-center p-8">
         {/* Mobile logo */}
-        <div className="mb-8 flex lg:hidden items-center gap-2 font-bold text-xl">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            PB
-          </div>
-          PBQC
+        <div className="mb-8 lg:hidden">
+          <Logo href="/" />
         </div>
 
         {children}

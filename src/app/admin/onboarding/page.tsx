@@ -42,7 +42,7 @@ export default async function AdminOnboardingPage() {
             Willkommen bei PBQC
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Richten Sie Ihr Profil fertig ein, um loszulegen
+            Bitte geben Sie Ihre Telefonnummer ein
           </p>
         </div>
 

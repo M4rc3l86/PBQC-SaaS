@@ -107,6 +107,17 @@ export function EmployeeForm({
           )}
         />
 
+        {/* Hidden role field for create mode - ensures role is always submitted */}
+        {mode === 'create' && (
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <input type="hidden" {...field} value="employee" />
+            )}
+          />
+        )}
+
         {mode === 'edit' && canEditRole && (
           <FormField
             control={form.control}

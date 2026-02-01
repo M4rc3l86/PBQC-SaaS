@@ -94,6 +94,7 @@ export function EditEmployeeDialog({
           <DialogTitle>Mitarbeiter bearbeiten</DialogTitle>
         </DialogHeader>
         <EmployeeForm
+          key={employee.id} // Forces remount when employee changes
           mode="edit"
           defaultValues={{
             fullName: employee.full_name,

@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update profile status
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('profiles')
       .update({ status: 'active' })
       .eq('id', userId)

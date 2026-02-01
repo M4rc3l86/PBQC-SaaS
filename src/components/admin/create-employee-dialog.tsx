@@ -14,11 +14,13 @@ import type { CreateEmployeeFormValues } from '@/lib/validations/users'
 interface CreateEmployeeDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onSuccess?: () => void
 }
 
 export function CreateEmployeeDialog({
   open,
   onOpenChange,
+  onSuccess,
 }: CreateEmployeeDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -41,8 +43,7 @@ export function CreateEmployeeDialog({
 
       toast.success(data.message || 'Mitarbeiter erfolgreich erstellt!')
       onOpenChange(false)
-      // Trigger page refresh to update employee list
-      window.location.reload()
+      onSuccess?.()
     } catch {
       toast.error('Ein unerwarteter Fehler ist aufgetreten')
     } finally {

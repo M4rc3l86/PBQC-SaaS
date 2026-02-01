@@ -31,8 +31,9 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = pathname.startsWith('/admin') || pathname.startsWith('/employee')
   const isAuthRoute = pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
-    pathname.startsWith('/forgot-password') ||
-    pathname.startsWith('/reset-password')
+    pathname.startsWith('/forgot-password')
+  // Allow /reset-password to be accessed by authenticated users (magic link flow)
+  const isResetPasswordRoute = pathname.startsWith('/reset-password')
 
   // Redirect unauthenticated users from protected routes to login
   if (isProtectedRoute && !user) {
@@ -50,7 +51,7 @@ export async function middleware(request: NextRequest) {
       .single()
 
     // Check if user is deactivated
-    if (profile?.status === 'inactive') {
+    if (profile?.status === 'deactivated') {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       url.searchParams.set('error', 'deactivated')
@@ -74,7 +75,8 @@ export async function middleware(request: NextRequest) {
     }
 
     // Redirect authenticated users from auth routes to appropriate dashboard
-    if (isAuthRoute && profile) {
+    // Note: /reset-password is excluded - authenticated users access it via magic link
+    if (isAuthRoute && profile && !isResetPasswordRoute) {
       const url = request.nextUrl.clone()
       if (profile.role === 'admin') {
         url.pathname = '/admin'

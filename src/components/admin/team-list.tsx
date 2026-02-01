@@ -110,7 +110,7 @@ const getTimeUntilNextReset = (employeeId: string): string | null => {
 
 type Profile = Tables<'profiles'>
 
-type StatusFilter = 'all' | 'active' | 'inactive'
+type StatusFilter = 'all' | 'active' | 'deactivated'
 
 export function TeamList() {
   const [employees, setEmployees] = useState<Profile[]>([])
@@ -286,22 +286,27 @@ export function TeamList() {
 
     setIsUpdating(true)
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        selectedEmployee.email,
-        {
-          redirectTo: `${window.location.origin}/reset-password`,
-        }
-      )
+      // Use our API endpoint which generates link for manual sending
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: selectedEmployee.email }),
+      })
 
-      if (error) throw error
+      const data = await response.json()
+
+      if (!response.ok) {
+        toast.error(data.message || 'Fehler beim Generieren des Rücksetzlinks')
+        return
+      }
 
       // Record the attempt
       recordResetAttempt(selectedEmployee.id)
 
-      toast.success('Passwort-Reset-E-Mail gesendet')
+      toast.success('Passwort-Reset-Link wurde generiert (siehe Server-Konsole)')
       setResetPasswordDialogOpen(false)
     } catch {
-      toast.error('Fehler beim Senden der E-Mail')
+      toast.error('Fehler beim Generieren des Rücksetzlinks')
     } finally {
       setIsUpdating(false)
     }
@@ -411,7 +416,7 @@ export function TeamList() {
           <SelectContent>
             <SelectItem value="all">Alle Status</SelectItem>
             <SelectItem value="active">Aktiv</SelectItem>
-            <SelectItem value="inactive">Inaktiv</SelectItem>
+            <SelectItem value="deactivated">Inaktiv</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -432,55 +437,101 @@ export function TeamList() {
           </p>
         </div>
       ) : (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>E-Mail</TableHead>
-                <TableHead>Rolle</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Letzte Anmeldung</TableHead>
-                <TableHead className="text-right">Aktionen</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedEmployees.map((employee) => (
-                <TableRow key={employee.id}>
-                  <TableCell className="font-medium">{employee.full_name}</TableCell>
-                  <TableCell>{employee.email}</TableCell>
-                  <TableCell>
+        <>
+          {/* Mobile Card Layout */}
+          <div className="md:hidden space-y-3">
+            {paginatedEmployees.map((employee) => (
+              <div key={employee.id} className="rounded-md border bg-card p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold truncate">{employee.full_name}</h3>
+                    <p className="text-sm text-muted-foreground break-all">{employee.email}</p>
+                  </div>
+                  <EmployeeStatusBadge status={employee.status} />
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                  <span>
+                    <span className="font-medium text-foreground">Rolle:</span>{' '}
                     {employee.role === 'admin' ? 'Administrator' : 'Mitarbeiter'}
-                  </TableCell>
-                  <TableCell>
-                    <EmployeeStatusBadge status={employee.status} />
-                  </TableCell>
-                  <TableCell>
+                  </span>
+                  <span>
+                    <span className="font-medium text-foreground">Letzte Anmeldung:</span>{' '}
                     {employee.last_login
                       ? formatDistanceToNow(new Date(employee.last_login), {
                           addSuffix: true,
                           locale: de,
                         })
                       : 'Noch nie'}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <EmployeeActions
-                      employee={employee}
-                      onEdit={() => handleEdit(employee)}
-                      onToggleStatus={() =>
-                        employee.status === 'active'
-                          ? handleDeactivate(employee)
-                          : handleReactivate(employee)
-                      }
-                      onResetPassword={() => handleResetPassword(employee)}
-                      isUpdating={isUpdating && selectedEmployee?.id === employee.id}
-                    />
-                  </TableCell>
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <EmployeeActions
+                    employee={employee}
+                    onEdit={() => handleEdit(employee)}
+                    onToggleStatus={() =>
+                      employee.status === 'active'
+                        ? handleDeactivate(employee)
+                        : handleReactivate(employee)
+                    }
+                    onResetPassword={() => handleResetPassword(employee)}
+                    isUpdating={isUpdating && selectedEmployee?.id === employee.id}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table Layout */}
+          <div className="hidden md:block rounded-md border overflow-x-auto">
+            <Table className="min-w-[600px]">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="whitespace-nowrap">Name</TableHead>
+                  <TableHead className="whitespace-normal min-w-[150px]">E-Mail</TableHead>
+                  <TableHead className="whitespace-nowrap">Rolle</TableHead>
+                  <TableHead className="whitespace-nowrap">Status</TableHead>
+                  <TableHead className="whitespace-nowrap">Letzte Anmeldung</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">Aktionen</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {paginatedEmployees.map((employee) => (
+                  <TableRow key={employee.id}>
+                    <TableCell className="font-medium whitespace-nowrap">{employee.full_name}</TableCell>
+                    <TableCell className="whitespace-normal min-w-[150px]">{employee.email}</TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      {employee.role === 'admin' ? 'Administrator' : 'Mitarbeiter'}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <EmployeeStatusBadge status={employee.status} />
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      {employee.last_login
+                        ? formatDistanceToNow(new Date(employee.last_login), {
+                            addSuffix: true,
+                            locale: de,
+                          })
+                        : 'Noch nie'}
+                    </TableCell>
+                    <TableCell className="text-right whitespace-nowrap">
+                      <EmployeeActions
+                        employee={employee}
+                        onEdit={() => handleEdit(employee)}
+                        onToggleStatus={() =>
+                          employee.status === 'active'
+                            ? handleDeactivate(employee)
+                            : handleReactivate(employee)
+                        }
+                        onResetPassword={() => handleResetPassword(employee)}
+                        isUpdating={isUpdating && selectedEmployee?.id === employee.id}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Pagination */}
@@ -494,6 +545,7 @@ export function TeamList() {
       <CreateEmployeeDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
+        onSuccess={loadEmployees}
       />
 
       <EditEmployeeDialog

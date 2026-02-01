@@ -8,6 +8,7 @@ export type AuditAction =
   | "user_deactivated"
   | "user_reactivated"
   | "password_reset"
+  | "password_reset_requested"
   | "email_changed";
 
 export interface AuditLogDetails {

@@ -88,8 +88,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if account is inactive
-    if (profile.status === 'inactive') {
+    // Check if account is deactivated
+    if (profile.status === 'deactivated') {
       await supabase.auth.signOut()
       return NextResponse.json(
         {
